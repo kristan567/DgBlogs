@@ -25,6 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.Arrays;
 
@@ -32,6 +33,7 @@ import java.util.Arrays;
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
+@EnableWebMvc
 public class SecurityConfig {
 
     private final JwtRequestFilter jwtRequestFilter;
@@ -50,7 +52,7 @@ public class SecurityConfig {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/signup","/signupWithImage", "/post/image/**", "/category", "/forgot-password/**", "/posts", "category/{categoryId}/posts", "post/{postId}")
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html","/login", "/signup","/signupWithImage", "/post/image/**", "/category", "/forgot-password/**", "/posts", "category/{categoryId}/posts", "post/{postId}")
                         .permitAll()
                         .anyRequest().authenticated()
                 )

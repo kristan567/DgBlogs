@@ -141,7 +141,6 @@ public class AdminPanelImpl implements AdminPanel {
         }else{
             throw new IllegalStateException("Something Went Wrong");
         }
-
     }
 
     @Override
