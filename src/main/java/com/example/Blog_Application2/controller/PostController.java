@@ -63,6 +63,14 @@ public class PostController {
         return new ResponseEntity<List<PostRes>>(posts, HttpStatus.OK);
     }
 
+    @GetMapping("authUser/posts")
+    public ResponseEntity<List<PostRes>>  getPostsByUserLoggedIn(){
+        List<PostRes> posts = this.postService.getPostsByUserLoggedIn();
+        return new ResponseEntity<List<PostRes>>(posts, HttpStatus.OK);
+    }
+
+
+
     @GetMapping("category/{categoryId}/posts")
     public ResponseEntity<List<PostRes>> getPostsByCategory(@PathVariable Integer categoryId){
         List<PostRes> posts = this.postService.getPostByCategory(categoryId);    //euta list rakhxa but id haru ko type hunxa which is PostRes so list gayera only tha kind of category which is present in postRes

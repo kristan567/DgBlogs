@@ -248,6 +248,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<PostRes> getPostsByUserLoggedIn() {
+        Long userId = authenticationFacade.getAuthentication().getUserId();
+        User user = this.userRepository.findById(userId).orElseThrow(()->new CustomException("user with Id: "+ userId+ "Not Found", HttpStatus.NOT_FOUND));
+        List<Post> posts = this.postRepository.findByUser(user);
+
+        return posts.stream()
+                .map(post -> postMapper.toDtoTwo(post)) // Use the injected postMapper here
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
     public List<PostRes> searchPosts(String Keyword) {
         List<Post> posts = this.postRepository.searchByTitle("%"+ Keyword+ "%");
 

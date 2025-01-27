@@ -16,7 +16,6 @@ public interface UserMapper extends MapperClass<User, UserReq, UserRes> {
 
     @Mapping(target = "id", ignore =true)
     @Mapping(target = "password", qualifiedByName = "encodePassword")
-
     User toEntity(UserReq userReq);
 
     @Mapping(target = "password", defaultValue = "*********")

@@ -5,6 +5,7 @@ import com.example.Blog_Application2.models.Category;
 import com.example.Blog_Application2.models.Comment;
 import com.example.Blog_Application2.models.User;
 import com.example.Blog_Application2.payloads.req.CategoryReq;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,7 @@ public class PostRes {
 
     private String imageName;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date addDate;
 
     private CategoryRes category;
@@ -36,16 +38,7 @@ public class PostRes {
     private Set<CommentRes> comments = new HashSet<>();
 
 
-    public PostRes(int postId, String title, String content, String imageName, Date addDate, CategoryRes category, UserRes user, Set<CommentRes> comments) {
-        this.postId = postId;
-        this.title = title;
-        this.content = content;
-        this.imageName = imageName;
-        this.addDate = addDate;
-        this.category = category;
-        this.user = user;
-        this.comments = comments;
-    }
+
 
     public CategoryRes getCategory() {
         return category;

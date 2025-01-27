@@ -46,7 +46,7 @@ public class LikeController {
         return likeService.getPostLikeCount(postId);
     }
 
-    @GetMapping("/{postId}/dislikeCount")
+    @GetMapping("/{postId}/disLikeCount")
     public int getPostDislikeCount(@PathVariable int postId) {
         return likeService.getPostDisLikeCount(postId);
     }

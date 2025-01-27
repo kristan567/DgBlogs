@@ -40,6 +40,8 @@ public interface PostService {
     //get all posts by user
     List<PostRes> getPostsByUser(Integer userId);
 
+    List<PostRes> getPostsByUserLoggedIn();
+
     //search posts
     List<PostRes> searchPosts(String Keyword);
 
