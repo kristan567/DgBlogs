@@ -12,7 +12,7 @@ public interface LikeMapper extends MapperClass<Like, LikeReq, LikeRes> {
     @Mapping(target = "id", ignore = true)
     Like toEntity(LikeReq likeReq);
 
-//    @Mapping(target = "id")
+    @Mapping(target = "id")
     LikeRes toDtoTwo(Like like);
 
 //    @Mapping(target="id")

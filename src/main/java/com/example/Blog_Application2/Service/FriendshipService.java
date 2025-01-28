@@ -1,6 +1,7 @@
 package com.example.Blog_Application2.Service;
 
 import com.example.Blog_Application2.models.Friendship;
+import com.example.Blog_Application2.payloads.res.FriendshipRes;
 
 import java.util.List;
 
@@ -13,5 +14,7 @@ public interface FriendshipService {
     List<Friendship> getSentRequests(Long userId);
 
     String respondToFriendRequest(Integer requestId, String status);
+
+    List<FriendshipRes> ListFriends();
 
 }

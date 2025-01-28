@@ -1,5 +1,6 @@
 package com.example.Blog_Application2.payloads.res;
 
+import com.example.Blog_Application2.models.Post;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +10,8 @@ import lombok.Setter;
 @Setter
 public class LikeRes {
     private Long id;
-    private int postId;
+//    private int postId;
+    private PostRes post;
     private boolean isLike;
     private boolean isDislike;
 
@@ -21,13 +23,23 @@ public class LikeRes {
         this.id = id;
     }
 
-    public int getPostId() {
-        return postId;
+    public PostRes getPost() {
+        return post;
     }
 
-    public void setPostId(int postId) {
-        this.postId = postId;
+    public void setPost(PostRes post) {
+        this.post = post;
     }
+
+
+
+//    public int getPostId() {
+//        return postId;
+//    }
+//
+//    public void setPostId(int postId) {
+//        this.postId = postId;
+//    }
 
     public boolean getIsLike() {
         return isLike;
@@ -40,8 +52,6 @@ public class LikeRes {
     public boolean getDislike() {
         return isDislike;
     }
-
-
 
     public void setDisLike(boolean disLike) {
         isDislike = disLike;

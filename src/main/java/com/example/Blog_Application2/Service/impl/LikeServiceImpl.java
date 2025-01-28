@@ -2,6 +2,7 @@ package com.example.Blog_Application2.Service.impl;
 
 import com.example.Blog_Application2.Service.LikeService;
 import com.example.Blog_Application2.Service.mappers.LikeMapper;
+import com.example.Blog_Application2.Service.mappers.PostMapper;
 import com.example.Blog_Application2.config.secuirty.AuthenticationFacade;
 import com.example.Blog_Application2.exception.CustomException;
 import com.example.Blog_Application2.models.Like;
@@ -9,6 +10,7 @@ import com.example.Blog_Application2.models.Post;
 import com.example.Blog_Application2.models.User;
 import com.example.Blog_Application2.payloads.req.LikeReq;
 import com.example.Blog_Application2.payloads.res.LikeRes;
+import com.example.Blog_Application2.payloads.res.PostRes;
 import com.example.Blog_Application2.repository.LikeRepository;
 import com.example.Blog_Application2.repository.PostRepository;
 import com.example.Blog_Application2.repository.UserRepository;
@@ -32,20 +34,59 @@ public class LikeServiceImpl implements LikeService {
 
     private final LikeMapper likeMapper;
 
-    public LikeServiceImpl(PostRepository postRepository, UserRepository userRepository, LikeRepository likeRepository, AuthenticationFacade authenticationFacade, LikeMapper likeMapper) {
+    private final PostMapper postMapper;
+
+    public LikeServiceImpl(PostRepository postRepository, UserRepository userRepository, LikeRepository likeRepository, AuthenticationFacade authenticationFacade, LikeMapper likeMapper, PostMapper postMapper) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.likeRepository = likeRepository;
         this.authenticationFacade = authenticationFacade;
         this.likeMapper = likeMapper;
+        this.postMapper = postMapper;
     }
+
+//    @Override
+//    public LikeRes likeOrDislikePos(LikeReq likeReq, Integer postId)
+//    {
+//        Long userId = authenticationFacade.getAuthentication().getUserId();
+//        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException("Post not found", HttpStatus.NOT_FOUND));
+//        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
+//
+//        PostRes postData= postMapper.toDtoTwo(post);
+//
+//        List<Like> existingLikes = likeRepository.findByUserAndPost(user, post);
+//        Like like;
+//
+//        if (!existingLikes.isEmpty()) {
+//            like = existingLikes.get(0);
+//            like.setLike(likeReq.isLike());
+//            like.setDisLike(likeReq.isDisLike());
+//        } else {
+//            like = new Like();
+//            like.setUser(user);
+//            like.setPost(post);
+//            like.setLike(likeReq.isLike());
+//            like.setDisLike(likeReq.isDisLike());
+//        }
+//        like = likeRepository.save(like);
+//        LikeRes likeRes = new LikeRes();
+//        likeRes.setId(like.getId());
+//        likeRes.setPost(postData);
+//        likeRes.setLike(like.isLike());
+//        likeRes.setDisLike(like.isDisLike());
+//
+//
+//        return likeRes;
+//    }
 
     @Override
     public LikeRes likeOrDislikePos(LikeReq likeReq, Integer postId)
     {
-        Long userId = authenticationFacade.getAuthentication().getUserId();       
+        Long userId = authenticationFacade.getAuthentication().getUserId();
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException("Post not found", HttpStatus.NOT_FOUND));
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
+
+        PostRes postData= postMapper.toDtoTwo(post);
 
         List<Like> existingLikes = likeRepository.findByUserAndPost(user, post);
         Like like;
@@ -64,12 +105,12 @@ public class LikeServiceImpl implements LikeService {
         like = likeRepository.save(like);
         LikeRes likeRes = new LikeRes();
         likeRes.setId(like.getId());
-        likeRes.setPostId(post.getPostId());
+        likeRes.setPost(postData);
         likeRes.setLike(like.isLike());
         likeRes.setDisLike(like.isDisLike());
 
-
         return likeRes;
+
     }
 
     @Override
