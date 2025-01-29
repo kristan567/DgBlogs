@@ -4,6 +4,7 @@ import com.example.Blog_Application2.Service.CommentReplyService;
 import com.example.Blog_Application2.config.jwt.JwtUtil;
 import com.example.Blog_Application2.payloads.req.CommentReplyReq;
 import com.example.Blog_Application2.payloads.req.CommentReq;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ public class CommentReplyController {
         this.jwtUtil = jwtUtil;
     }
 
+    @Operation(summary = "Create comment-reply")
     @PostMapping("post/{postId}/comment/{commentId}/comment-reply")
     public ResponseEntity<?> createReply(@RequestBody CommentReplyReq commentReplyReq, @PathVariable Integer commentId, @PathVariable Integer postId, HttpServletRequest request){
         String authHeader = request.getHeader("Authorization");
@@ -35,21 +37,25 @@ public class CommentReplyController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commentReplyService.createCommentReplay(commentReplyReq, commentId, postId));
     }
 
+    @Operation(summary = "update commentReply")
     @PutMapping("/update-commentReply/{commentReplyId}")
     public ResponseEntity<?> updateCommentReply(@RequestBody CommentReplyReq commentReplyReq,@PathVariable Integer commentReplyId){
         return ResponseEntity.status(HttpStatus.OK).body(commentReplyService.updateCommentReply(commentReplyReq, commentReplyId));
     }
 
+    @Operation(summary = "get CommentsReply by id")
     @GetMapping("/CommentReply-comment/{commentId}")
     public ResponseEntity<?> getCommentReplyByComment(@PathVariable Integer commentId){
         return ResponseEntity.status(HttpStatus.OK).body(commentReplyService.getAllCommentsReplyByComments(commentId));
     }
 
+    @Operation(summary = "delete comment reply ")
     @DeleteMapping("Comment-Reply/{commentReplyId}")
     public ResponseEntity<?> deleteCommentReplay(@PathVariable Integer commentReplyId ){
         return ResponseEntity.status(HttpStatus.OK).body(commentReplyService.deleteCommentReply(commentReplyId));
     }
 
+    @Operation(summary = "get commentReply count")
     @GetMapping("/{commentId}/commentReplyCount")
     public Long getCommentLikeCount(@PathVariable int commentId) {
         return commentReplyService.getCommentReplyCountByComment(commentId);

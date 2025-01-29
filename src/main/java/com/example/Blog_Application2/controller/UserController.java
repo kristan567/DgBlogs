@@ -11,6 +11,7 @@ import com.example.Blog_Application2.payloads.req.ResetPassReq;
 import com.example.Blog_Application2.payloads.req.UserReq;
 import com.example.Blog_Application2.payloads.res.LoginRes;
 import com.example.Blog_Application2.utils.AppConstant;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -63,21 +64,25 @@ public class UserController {
         this.fileService =  fileService;
     }
 
+    @Operation(summary = "sign up for user")
     @PostMapping("/signup")
     public ResponseEntity<?> save(@Valid @RequestBody UserReq user){
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
     }
 
+    @Operation(summary = "sign up with image")
     @PostMapping("/signupWithImage")
     public ResponseEntity<?> saveWithImage(@ModelAttribute UserReq userReq, @RequestParam("image") MultipartFile image){
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUserWithImage(userReq, image,path));
     }
 
+    @Operation(summary = "crate user by admin")
     @PostMapping("/create-Admin")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserReq userReq ){
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userReq));
     }
 
+    @Operation(summary = "login for the user")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginReq loginReq) {        //marks the format that it should be from loginreq
         Authentication authentication = authenticationManager.authenticate(        //object creation but with authenticating the value of token
@@ -88,22 +93,26 @@ public class UserController {
         return ResponseEntity.ok().body(new LoginRes(token));       //Sends the token back to the client, which will store it (usually in localStorage, sessionStorage, or cookies) and include it in future requests for authentication.
     }
 
+    @Operation(summary = "get logged in user")
     @GetMapping("/logged-in-user")
     public ResponseEntity<?> getLoggedInUser() {
         long userId = facade.getAuthentication().getUserId();
        return new ResponseEntity<>("User signed in successfully", HttpStatus.OK);
     }
 
+    @Operation(summary = "get user by the id")
     @GetMapping("/user/{id}")
     public ResponseEntity<?> getUser(@PathVariable("id") long id) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findById(id));
     }
 
+    @Operation(summary = "get user who is authenticated")
     @GetMapping("/getUser-auth")
     public ResponseEntity<?> getUserByAuthentication() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findByUserAuthentication());
     }
 
+    @Operation(summary = "update the user")
     @PutMapping("/user/{id}")
     public ResponseEntity<?> updateUser(@PathVariable("id") long id, @Valid @RequestBody UserReq user) {
         return ResponseEntity.ok().body(userService.updateById(id, user));
@@ -111,24 +120,27 @@ public class UserController {
 
 
 //    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "delete the user")
     @DeleteMapping("/deleteUser")
     public ResponseEntity<?> deleteUser() {
         return ResponseEntity.ok().body(userService.deleteById());
     }
 
 
+    @Operation(summary = "get users")
     @GetMapping("/users")
     public ResponseEntity<?> getUsers() {
         return ResponseEntity.ok().body(userService.getAllUsers());
     }
 
 
+    @Operation(summary = "users can reset the password")
     @PutMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPassReq passReq) {
         return ResponseEntity.ok().body(userService.resetPassword(passReq));
     }
 
-
+    @Operation(summary = "get user by page")
     @GetMapping("/users-page")
     public ResponseEntity<?> getUserByPage(@RequestParam(value = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber
             ,@RequestParam(value="pageSize", defaultValue = AppConstants.PAGE_SIZE,required = false)Integer pageSize
@@ -138,6 +150,7 @@ public class UserController {
 
     }
 
+    @Operation(summary = "get user image")
     @GetMapping(value = "/user/image/{imageName}", produces = MediaType.IMAGE_JPEG_VALUE)
     public void downloadImage(@PathVariable("imageName") String imageName, HttpServletResponse response)throws IOException {
         InputStream resource = this.fileService.getResource(path, imageName);

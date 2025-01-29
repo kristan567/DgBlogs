@@ -9,6 +9,7 @@ import com.example.Blog_Application2.payloads.req.ChangePassword;
 import com.example.Blog_Application2.payloads.req.MailBody;
 import com.example.Blog_Application2.repository.ForgotPasswordRepository;
 import com.example.Blog_Application2.repository.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,6 +42,7 @@ public class ForgotPasswordController {
     }
 
     //send email for email verification
+        @Operation(summary = "get email verification")
         @PostMapping("/verifyPassword/{email}")
         public ResponseEntity<String> verificationEmail(@PathVariable String email){
             User user = userRepository.findByEmail(email).orElseThrow(()->new CustomException("user not found", HttpStatus.NOT_FOUND));
@@ -64,6 +66,7 @@ public class ForgotPasswordController {
 
         }
 
+     @Operation(summary = "get otp verified")
      @PostMapping("/verification/{otp}/{email}")
      public ResponseEntity<String> verifyOtp(@PathVariable Integer otp, @PathVariable String email){
          User user = userRepository.findByEmail(email).orElseThrow(()->new CustomException("user not found", HttpStatus.NOT_FOUND));
@@ -82,7 +85,7 @@ public class ForgotPasswordController {
 
      }
 
-
+    @Operation(summary = "change the password")
     @PostMapping("changePassword/{email}")
     public ResponseEntity<String> changePasswordHandler(@RequestBody ChangePassword changePassword, @PathVariable String email){
 

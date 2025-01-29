@@ -19,7 +19,10 @@ public interface PostService {
     //update
     PostRes updatePost(PostReq postReq, Integer postId);
 
+//    PostRes uploadImageAndUpdatePost(MultipartFile image, PostReq postReq, Integer PostId, String path);
+
     PostRes uploadImageAndUpdatePost(MultipartFile image, Integer PostId, String path);
+
 
     //delete
     String deletePost(Integer postId);

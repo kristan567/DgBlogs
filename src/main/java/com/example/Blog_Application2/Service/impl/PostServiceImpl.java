@@ -113,6 +113,23 @@ public class PostServiceImpl implements PostService {
         return postMapper.toDtoTwo(post);
     }
 
+//    @Override
+//    public PostRes uploadImageAndUpdatePost(MultipartFile image, PostReq postReq, Integer PostId, String path){
+//        Long userId = authenticationFacade.getAuthentication().getUserId();
+//        Post post = postRepository.findById(PostId).orElseThrow(()-> new CustomException("post Not Found", HttpStatus.NOT_FOUND));
+//        if(userId != post.getUser().getId()){
+//            throw new CustomException("not a valid User to Update this post", HttpStatus.BAD_REQUEST);
+//        }
+//        String filename = fileService.uploadImage(path, image);
+//        post.setImageName(filename);
+//        post.setTitle(postReq.getTitle().trim());
+//        post.setContent(postReq.getContent().trim());
+//        post.setAddDate(new Date());
+//        postRepository.save(post);
+//
+//        return postMapper.toDtoTwo(post);
+//    }
+
     @Override
     public PostRes uploadImageAndUpdatePost(MultipartFile image, Integer PostId, String path){
         Long userId = authenticationFacade.getAuthentication().getUserId();
@@ -126,6 +143,8 @@ public class PostServiceImpl implements PostService {
 
         return postMapper.toDtoTwo(post);
     }
+
+
 
     @Override
     public String deletePost(Integer postId) {
