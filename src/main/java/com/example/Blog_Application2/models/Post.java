@@ -47,6 +47,10 @@ public class Post {
     @JsonIgnore
     private Set<CommentReply> commentReply = new HashSet<>();
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Like> likes = new HashSet<>();
+
 
 
 

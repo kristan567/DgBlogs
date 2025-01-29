@@ -14,11 +14,11 @@ public class Friendship {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name="sender_id")
+//    @JoinColumn(name="sender_id")
     private User sender;
 
     @ManyToOne
-    @JoinColumn(name="receiver_id")
+//    @JoinColumn(name="receiver_id")
     private User receiver;
 
     private FriendRequestStatus status;

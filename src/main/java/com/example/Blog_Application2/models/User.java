@@ -6,9 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter
@@ -60,6 +58,17 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<CommentReply> commentReply = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Like> likes = new HashSet<>();
+
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.REMOVE , orphanRemoval = true)
+    private Set<Friendship> sentFriendRequests = new HashSet<>();
+
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.REMOVE , orphanRemoval = true)
+    private Set<Friendship> receivedFriendRequests = new HashSet<>();
+
 
     @Temporal(TemporalType.DATE)
     private Date addDate;
