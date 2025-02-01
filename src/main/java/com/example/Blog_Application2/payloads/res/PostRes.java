@@ -35,7 +35,7 @@ public class PostRes {
 
     private UserRes user;
 
-    private Set<CommentRes> comments = new HashSet<>();
+//    private Set<CommentRes> comments = new HashSet<>();
 
 
 
@@ -96,13 +96,13 @@ public class PostRes {
         this.addDate = addDate;
     }
 
-    public Set<CommentRes> getComments() {
-        return comments;
-    }
-
-    public void setComments(Set<CommentRes> comments) {
-        this.comments = comments;
-    }
+//    public Set<CommentRes> getComments() {
+//        return comments;
+//    }
+//
+//    public void setComments(Set<CommentRes> comments) {
+//        this.comments = comments;
+//    }
 
     public void excludeContent() {
         this.content = null;

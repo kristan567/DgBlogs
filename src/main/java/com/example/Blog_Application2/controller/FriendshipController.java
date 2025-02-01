@@ -2,7 +2,9 @@ package com.example.Blog_Application2.controller;
 
 import com.example.Blog_Application2.Service.FriendshipService;
 import com.example.Blog_Application2.models.Friendship;
+import com.example.Blog_Application2.payloads.res.FriendPostRes;
 import com.example.Blog_Application2.payloads.res.FriendshipRes;
+import com.example.Blog_Application2.payloads.res.PostRes;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +51,12 @@ public class FriendshipController {
     @GetMapping("/listFriends")
     public ResponseEntity<List<FriendshipRes>> viewFriends(){
         return ResponseEntity.status(HttpStatus.OK).body(friendshipService.ListFriends());
+    }
+
+    @Operation(summary = "see friends posts")
+    @GetMapping("/friends-post")
+    public ResponseEntity<List<PostRes>> ViewPostFromFriends(){
+        return ResponseEntity.status(HttpStatus.OK).body(friendshipService.ViewPostFromFriends());
     }
 
 

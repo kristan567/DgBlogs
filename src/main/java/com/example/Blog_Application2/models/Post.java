@@ -28,6 +28,9 @@ public class Post {
 
     private String imageName;
 
+//    @Column(name = "is_archived")
+//    private boolean isArchived;
+
     @Temporal(TemporalType.DATE)
     private Date addDate;
 

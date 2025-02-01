@@ -59,6 +59,17 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.save(user);
 
+        String userEmail = userReq.getEmail();
+
+
+        MailBody mailBody = MailBody.builder()
+                .to(userEmail)
+                .subject("Account Creation")
+                .text("Your Account Has Been created in DgBlogs")
+                .build();
+
+        emailService.sendSimpleMessage(mailBody);
+
         return findById(user.getId());
     }
 
@@ -78,6 +89,17 @@ public class UserServiceImpl implements UserService {
             user.setRole(Role.USER);
         }
         userRepository.save(user);
+
+        String userEmail = userReq.getEmail();
+
+
+        MailBody mailBody = MailBody.builder()
+                .to(userEmail)
+                .subject("Account Creation")
+                .text("Your Account Has Been created in DgBlogs")
+                .build();
+
+        emailService.sendSimpleMessage(mailBody);
 
         return userMapper.toDtoTwo(user);
 
@@ -100,8 +122,6 @@ public class UserServiceImpl implements UserService {
 
         String userEmail = userReq.getEmail();
         String userPassword = userReq.getPassword();
-
-
 
         MailBody mailBody = MailBody.builder()
                 .to(userEmail)

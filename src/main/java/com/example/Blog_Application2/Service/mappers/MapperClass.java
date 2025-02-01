@@ -11,5 +11,7 @@ public interface MapperClass<E,D,C> {
 
     D toDtoTwo(C c);
 
+    D toDtoThree(D d);
+
 
 }

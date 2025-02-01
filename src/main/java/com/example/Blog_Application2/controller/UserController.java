@@ -118,7 +118,6 @@ public class UserController {
         return ResponseEntity.ok().body(userService.updateById(id, user));
     }
 
-
 //    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "delete the user")
     @DeleteMapping("/deleteUser")
@@ -147,7 +146,6 @@ public class UserController {
             ,@RequestParam(value="sortBy", defaultValue = AppConstants.SORT_BY, required = false)String sortBy
             ,@RequestParam(value="sortDir", defaultValue = AppConstants.SORT_DIR, required = false)String sortDir){
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserByPage(pageNumber, pageSize, sortBy, sortDir));
-
     }
 
     @Operation(summary = "get user image")

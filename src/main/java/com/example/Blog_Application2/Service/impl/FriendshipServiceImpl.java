@@ -1,14 +1,20 @@
 package com.example.Blog_Application2.Service.impl;
 
 import com.example.Blog_Application2.Service.FriendshipService;
+import com.example.Blog_Application2.Service.mappers.FriendPostViewerMapper;
 import com.example.Blog_Application2.Service.mappers.FriendshipMapper;
+import com.example.Blog_Application2.Service.mappers.PostMapper;
 import com.example.Blog_Application2.config.secuirty.AuthenticationFacade;
 import com.example.Blog_Application2.enums.FriendRequestStatus;
 import com.example.Blog_Application2.exception.CustomException;
 import com.example.Blog_Application2.models.Friendship;
+import com.example.Blog_Application2.models.Post;
 import com.example.Blog_Application2.models.User;
+import com.example.Blog_Application2.payloads.res.FriendPostRes;
 import com.example.Blog_Application2.payloads.res.FriendshipRes;
+import com.example.Blog_Application2.payloads.res.PostRes;
 import com.example.Blog_Application2.repository.FriendshipRepository;
+import com.example.Blog_Application2.repository.PostRepository;
 import com.example.Blog_Application2.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -33,12 +40,23 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     private final FriendshipMapper friendshipMapper;
 
-    public FriendshipServiceImpl(UserRepository userRepository, FriendshipRepository friendshipRepository, AuthenticationFacade authenticationFacade, FriendshipMapper friendshipMapper) {
+    private final FriendPostViewerMapper friendPostViewerMapper;
+
+    private final PostRepository postRepository;
+
+    private final PostMapper postMapper;
+
+
+
+    public FriendshipServiceImpl(UserRepository userRepository, FriendshipRepository friendshipRepository, AuthenticationFacade authenticationFacade, FriendshipMapper friendshipMapper, FriendPostViewerMapper friendPostViewerMapper, PostRepository postRepository, PostMapper postMapper) {
         this.userRepository = userRepository;
         this.friendshipRepository = friendshipRepository;
 //        this.friendRequestStatus = friendRequestStatus;
         this.authenticationFacade = authenticationFacade;
         this.friendshipMapper = friendshipMapper;
+        this.friendPostViewerMapper = friendPostViewerMapper;
+        this.postRepository = postRepository;
+        this.postMapper = postMapper;
     }
 
     @Override
@@ -115,4 +133,66 @@ public class FriendshipServiceImpl implements FriendshipService {
 
           return res;
     }
+
+//    @Override
+//    public List<FriendPostRes> ViewPostFromFriends(){
+//        Long userId = authenticationFacade.getAuthentication().getUserId();
+//        List<FriendPostRes> postList = friendshipRepository.findPostByFriendsAsSender(userId);
+//
+//        List<FriendPostRes> res = new ArrayList<>();
+//        postList.forEach(friendship->{res.add(friendPostViewerMapper.toDtoThree(friendship));
+//        });
+//
+//        return res;
+//
+//
+//    }
+
+//    @Override
+//    public List<FriendPostRes> ViewPostFromFriends(){
+//        Long userId = authenticationFacade.getAuthentication().getUserId();
+//        System.out.println("userId: "+userId);
+//        List<FriendPostRes> friendList = friendshipRepository.findPostByFriends(userId);
+//        // Step 2: Extract friend user IDs from friendship
+//        List<Long> friendIds = friendList.stream()
+//                .map(FriendPostRes::getReceiverId) // Assuming getReceiverId() exists
+//                .collect(Collectors.toList());
+//        // Step 3: Fetch posts using those friend IDs
+//        List<Post> postList = postRepository.findAllByUserIdIn(friendIds);
+//        List<FriendPostRes> res = new ArrayList<>();
+//        postList.forEach(post->{res.add(friendPostViewerMapper.toDtoThree(post));
+//        });
+//
+//        return res;
+//    }
+
+    @Override
+    public List<PostRes> ViewPostFromFriends(){
+        Long userId = authenticationFacade.getAuthentication().getUserId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+
+
+        List<Friendship> friendships = friendshipRepository.findBySenderOrReceiverAndStatus(userId, FriendRequestStatus.ACCEPTED);
+
+//        System.out.println(friendships);
+
+        List<User> friends = new ArrayList<>();
+        for (Friendship friendship : friendships) {        //friendship takes one element from friendList
+            if (friendship.getSender().equals(user)) {     //   checks if the user is equal to sender column in the friends
+                friends.add(friendship.getReceiver());     //if the user is sender then it adds all the receiver friend of that sender to the list
+            } else {
+                friends.add(friendship.getSender());      // if it is not sender it may be receiver so it adds all the sender id to the friends list which is friend of the receiver
+            }
+        }
+
+        List<Post> posts = this.postRepository.findByUserIn(friends);    //all the post is of that particular which is coming from friends list is taken out and added to the postList similar to the get all post
+
+
+        return posts.stream()   //each value is added one by one
+                .map(post -> postMapper.toDtoTwo(post)) // Use the injected postMapper here
+                .collect(Collectors.toList());
+
+
+    }
+
 }

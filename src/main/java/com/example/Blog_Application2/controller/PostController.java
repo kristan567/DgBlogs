@@ -43,13 +43,12 @@ public class PostController {
     @Operation(summary = "create post")
     @PostMapping("/category/{categoryId}/posts")
     public ResponseEntity<?> createPost(@Valid @RequestBody PostReq postReq, @PathVariable Integer categoryId){
-
         return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPost(postReq, categoryId));
     }
+
     @Operation(summary = "create post with image")
     @PostMapping("/category/{categoryId}/image/posts")
     public ResponseEntity<?> createPostWithImage(@ModelAttribute PostReq postReq,@RequestParam("image") MultipartFile image, @PathVariable Integer categoryId){
-
         return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPostWithImage(postReq, categoryId,image, path));
     }
 
@@ -69,10 +68,7 @@ public class PostController {
     @PostMapping("/post/image/upload/{postId}")
     public ResponseEntity<?> fileUpload(@RequestParam("image") MultipartFile image,
                                         @PathVariable Integer postId) throws IOException {
-
-
         return ResponseEntity.status(HttpStatus.OK).body(postService.uploadImageAndUpdatePost(image, postId, path));
-
     }
 
     @Operation(summary = "get post by the userId ")
@@ -88,7 +84,6 @@ public class PostController {
         List<PostRes> posts = this.postService.getPostsByUserLoggedIn();
         return new ResponseEntity<List<PostRes>>(posts, HttpStatus.OK);
     }
-
 
     @Operation(summary = "get post by the category")
     @GetMapping("category/{categoryId}/posts")

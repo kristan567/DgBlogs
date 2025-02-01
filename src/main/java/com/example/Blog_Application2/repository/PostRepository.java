@@ -40,5 +40,10 @@ public interface PostRepository  extends JpaRepository<Post, Integer> {
     int countPostsByUserToday(@Param("userId") Long userId);
 
 
+//    @Query("SELECT p FROM Post p WHERE p.user IN :friendIds")
+//    List<Post> findAllByUserIdIn(@Param("friendIds") List<Long> friendIds);
+
+
+    List<Post> findByUserIn(List<User> users);
 
 }

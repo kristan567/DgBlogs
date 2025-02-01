@@ -3,6 +3,7 @@ package com.example.Blog_Application2.Service.mappers;
 import com.example.Blog_Application2.models.Friendship;
 import com.example.Blog_Application2.models.Like;
 import com.example.Blog_Application2.payloads.req.FriendshipReq;
+import com.example.Blog_Application2.payloads.res.FriendPostRes;
 import com.example.Blog_Application2.payloads.res.FriendshipRes;
 import com.example.Blog_Application2.payloads.res.LikeRes;
 import org.mapstruct.Mapper;
@@ -16,4 +17,8 @@ public interface FriendshipMapper extends MapperClass<Friendship, FriendshipReq,
 
     @Mapping( source = "receiver", target = "user")
     FriendshipRes toDtoTwo(Friendship friendship);
+
+//    FriendPostRes toDtoThree(FriendPostRes friendPostRes);
+
+
 }
