@@ -163,6 +163,34 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
+    public List<LikeRes> getLikesOnlyByAuthenticatedUser(){
+        Long userId = authenticationFacade.getAuthentication().getUserId();
+        User user = userRepository.findById(userId).orElseThrow(()->new CustomException("user with Id: " + userId + "Not Found", HttpStatus.NOT_FOUND));
+
+        List<Like> likes = likeRepository.findUserlike(user);
+
+
+        return likes.stream()
+                .map(like->likeMapper.toDtoTwo(like))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<LikeRes> getDisLikesByAuthenticatedUser(){
+        Long userId = authenticationFacade.getAuthentication().getUserId();
+        User user = userRepository.findById(userId).orElseThrow(()->new CustomException("user with Id: " + userId + "Not Found", HttpStatus.NOT_FOUND));
+
+        List<Like> likes = likeRepository.findUserDislike(user);
+
+
+        return likes.stream()
+                .map(like->likeMapper.toDtoTwo(like))
+                .collect(Collectors.toList());
+    }
+
+
+
+    @Override
     public Integer getPostLikeCount(int postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException("Post not found", HttpStatus.NOT_FOUND));

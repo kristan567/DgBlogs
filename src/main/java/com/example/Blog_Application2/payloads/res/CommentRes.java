@@ -3,6 +3,7 @@ package com.example.Blog_Application2.payloads.res;
 import com.example.Blog_Application2.models.Post;
 import com.example.Blog_Application2.models.User;
 import com.example.Blog_Application2.payloads.req.PostReq;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -20,10 +21,12 @@ public class CommentRes {
     @Column(nullable = false, length =500)
     private String Content;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     @Column(name = "created_At", updatable=false )
     @Temporal(TemporalType.TIMESTAMP)
     private Date created_At;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     @Column(name = "updated_At")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;

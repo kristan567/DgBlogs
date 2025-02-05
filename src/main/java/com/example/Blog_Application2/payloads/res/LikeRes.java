@@ -1,9 +1,13 @@
 package com.example.Blog_Application2.payloads.res;
 
 import com.example.Blog_Application2.models.Post;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Column;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Data
 @Getter
@@ -14,6 +18,17 @@ public class LikeRes {
     private PostRes post;
     private boolean isLike;
     private boolean isDislike;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
+    private LocalDateTime actionDate;
+
+    public LocalDateTime getActionDate() {
+        return actionDate;
+    }
+
+    public void setActionDate(LocalDateTime actionDate) {
+        this.actionDate = actionDate;
+    }
 
     public Long getId() {
         return id;
@@ -30,6 +45,8 @@ public class LikeRes {
     public void setPost(PostRes post) {
         this.post = post;
     }
+
+
 
 
 

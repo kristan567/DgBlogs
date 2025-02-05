@@ -195,4 +195,20 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     }
 
+
+    @Override
+    public String DeleteFriendship( Integer friendId){
+        Long userId = authenticationFacade.getAuthentication().getUserId();
+        Friendship friend = friendshipRepository.findById(friendId).orElseThrow(() -> new CustomException("Friendship not found", HttpStatus.NOT_FOUND));;
+
+        if(userId != friend.getSender().getId() || userId != friend.getReceiver().getId()){
+            throw new CustomException("not a valid User to delete this post", HttpStatus.BAD_REQUEST);
+        }
+
+        friendshipRepository.deleteById(friendId);
+        return "Friendship deleted";
+    }
+
+
+
 }

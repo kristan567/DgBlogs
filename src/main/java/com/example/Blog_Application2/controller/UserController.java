@@ -6,10 +6,12 @@ import com.example.Blog_Application2.Service.UserService;
 import com.example.Blog_Application2.config.jwt.JwtUtil;
 import com.example.Blog_Application2.config.secuirty.AuthenticationFacade;
 import com.example.Blog_Application2.constant.AppConstants;
+import com.example.Blog_Application2.models.User;
 import com.example.Blog_Application2.payloads.req.LoginReq;
 import com.example.Blog_Application2.payloads.req.ResetPassReq;
 import com.example.Blog_Application2.payloads.req.UserReq;
 import com.example.Blog_Application2.payloads.res.LoginRes;
+import com.example.Blog_Application2.repository.UserRepository;
 import com.example.Blog_Application2.utils.AppConstant;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 
 @RestController
@@ -52,16 +55,19 @@ public class UserController {
 
     private final FileService fileService;
 
+    private final UserRepository userRepository;
+
     @Value("${project.image}")
     private String path;
 
-    public UserController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserDetailsService userDetailsService, AuthenticationFacade facade, FileService fileService) {
+    public UserController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserDetailsService userDetailsService, AuthenticationFacade facade, FileService fileService, UserRepository userRepository) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
         this.facade = facade;
         this.fileService =  fileService;
+        this.userRepository = userRepository;
     }
 
     @Operation(summary = "sign up for user")
@@ -93,11 +99,23 @@ public class UserController {
         return ResponseEntity.ok().body(new LoginRes(token));       //Sends the token back to the client, which will store it (usually in localStorage, sessionStorage, or cookies) and include it in future requests for authentication.
     }
 
-    @Operation(summary = "get logged in user")
+    @Operation(summary = "confirm if user is logged in successfully")
     @GetMapping("/logged-in-user")
     public ResponseEntity<?> getLoggedInUser() {
         long userId = facade.getAuthentication().getUserId();
-       return new ResponseEntity<>("User signed in successfully", HttpStatus.OK);
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if(userOptional.isPresent()){
+                User user = userOptional.get();
+                user.setActive(true);
+                userRepository.save(user);
+            return new ResponseEntity<>("User is online", HttpStatus.OK);
+        }else{
+            User user = userOptional.get();
+            user.setActive(false);
+            userRepository.save(user);
+            return new ResponseEntity<>("User is Offline", HttpStatus.NOT_FOUND);
+        }
     }
 
     @Operation(summary = "get user by the id")

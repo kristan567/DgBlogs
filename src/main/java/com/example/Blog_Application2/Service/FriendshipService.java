@@ -19,6 +19,8 @@ public interface FriendshipService {
 
     List<FriendshipRes> ListFriends();
 
-    public List<PostRes> ViewPostFromFriends();
+    List<PostRes> ViewPostFromFriends();
+
+    String DeleteFriendship( Integer friendId);
 
 }

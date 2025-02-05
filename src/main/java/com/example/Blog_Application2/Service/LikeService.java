@@ -15,6 +15,10 @@ public interface LikeService {
 
     List<LikeRes> getLikesByAuthenticatedUser();
 
+    List<LikeRes> getLikesOnlyByAuthenticatedUser();
+
+    List<LikeRes> getDisLikesByAuthenticatedUser();
+
     Integer getPostLikeCount(int postId);
 
     Integer getPostDisLikeCount(int postId);

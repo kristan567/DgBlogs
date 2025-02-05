@@ -28,7 +28,7 @@ public class LikeController {
         return likeService.likeOrDislikePos(likeReq, postId);
     }
 
-    @Operation(summary = "view al likes in the post")
+    @Operation(summary = "view all likes in the post")
     @GetMapping("/likesInPost/{postId}")
     public List<LikeRes> getPostLikes(@PathVariable int postId) {
         return likeService.getPostLikes(postId);
@@ -44,6 +44,18 @@ public class LikeController {
     @GetMapping("/likesByAuthenticatedUser")
     public ResponseEntity<?> getLikesByAuthenticatedUser(){
         return ResponseEntity.status(HttpStatus.OK).body(likeService.getLikesByAuthenticatedUser());
+    }
+
+    @Operation(summary = "likes only by the authenticated user")
+    @GetMapping("/likesOnlyByAuthenticatedUser")
+    public ResponseEntity<?> getLikesOnlyByAuthenticatedUser(){
+        return ResponseEntity.status(HttpStatus.OK).body(likeService.getLikesOnlyByAuthenticatedUser());
+    }
+
+    @Operation(summary = "dislikes only by the authenticated user")
+    @GetMapping("/dislikesByAuthenticatedUser")
+    public ResponseEntity<?> getDisLikesByAuthenticatedUser(){
+        return ResponseEntity.status(HttpStatus.OK).body(likeService.getDisLikesByAuthenticatedUser());
     }
 
     @Operation(summary = "post like count")

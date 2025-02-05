@@ -16,6 +16,13 @@ public interface LikeRepository extends JpaRepository<Like,Integer> {
     List<Like> findByPost(Post post);
     List<Like> findByUser(User user);
     List<Like> findByUserAndPost(User user, Post post);
+
+    @Query(value = "Select * from likes  where is_Like = 1", nativeQuery = true)
+    List<Like> findUserlike(User user);
+
+    @Query(value = "Select * from likes  where is_dis_Like = 1", nativeQuery = true)
+    List<Like> findUserDislike(User user);
+
     @Query(value = "SELECT COUNT(l.id) FROM likes l WHERE l.post_id = :postId AND l.is_like = :is_Like", nativeQuery = true)
     int countByPostAndIsLike(@Param("postId") long postId, @Param("is_Like") boolean isLike);
 
