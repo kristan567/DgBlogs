@@ -49,6 +49,9 @@ public interface PostService {
     List<PostRes> searchPosts(String Keyword);
 
 
+    String sharePosts(Integer categoryId,Integer postId);
+
+
 
 
 

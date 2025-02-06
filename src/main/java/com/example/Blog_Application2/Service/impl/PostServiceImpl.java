@@ -347,4 +347,18 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList());
     }
 
+
+    @Override
+        public String sharePosts(Integer categoryId,Integer postId){
+        Post post = postRepository.findById(postId).orElseThrow(()-> new CustomException("Post Not Found", HttpStatus.NOT_FOUND));
+        Integer category = post.getCategory().getCategoryId();
+
+
+        String postURl = "http://localhost:5173/posts/";
+
+        return postURl + categoryId + "/"+ postId;
+
+
+        }
+
 }
