@@ -21,4 +21,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     Long countByPostId(@Param("post_id") long postId);
 
 
+//    @Query(value = "")
+
+
 }

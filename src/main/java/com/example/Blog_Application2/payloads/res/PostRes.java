@@ -35,6 +35,8 @@ public class PostRes {
 
     private UserRes user;
 
+    private boolean deletable;
+
 //    private Set<CommentRes> comments = new HashSet<>();
 
 
@@ -108,4 +110,11 @@ public class PostRes {
         this.content = null;
     }
 
+    public boolean isDeletable() {
+        return deletable;
+    }
+
+    public void setDeletable(boolean deletable) {
+        this.deletable = deletable;
+    }
 }

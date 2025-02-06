@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Page;
@@ -161,13 +162,45 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostRes> getAllPost() {
-        List<Post> postList = postRepository.findAll();
-        List<PostRes> res = new ArrayList<>();
-        postList.forEach(post-> {
-            res.add(postMapper.toDtoTwo(post));
-        });
 
-        return res;
+        Long userId = null;
+
+        try {
+            userId = authenticationFacade.getAuthentication().getUserId();
+        } catch (Exception e) {
+            userId = null;
+        }
+
+        if(userId != null) {
+
+
+            List<Post> postList = postRepository.findAll();
+            List<PostRes> res = new ArrayList<>();
+            Long finalUserId = userId;
+            postList.forEach(post -> {
+                PostRes postRes = postMapper.toDtoTwo(post);
+                if (finalUserId.equals(post.getUser().getId())) {
+                    postRes.setDeletable(true);
+                } else {
+                    postRes.setDeletable(false);
+                }
+
+                res.add(postRes);
+            });
+            
+
+            return res;
+
+        }else {
+          
+            List<Post> postList = postRepository.findAll();
+
+            List<PostRes> res = new ArrayList<>();
+            postList.forEach(post-> {
+                res.add(postMapper.toDtoTwo(post));
+            });
+            return res;
+        }
     }
 
     @Override
@@ -220,11 +253,39 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostRes getPostById(Integer postId) {
-        Optional<Post> post = postRepository.findById(postId);
-        if(post.isEmpty()) throw new CustomException("post with Id: "+ postId +" not found", HttpStatus.NOT_FOUND);
-        PostRes res = postMapper.toDtoTwo(post.get());
+        Long userId = null;
+
+        try {
+            userId = authenticationFacade.getAuthentication().getUserId();
+        } catch (Exception e) {
+            userId = null;
+        }
+
+        if(userId != null) {
+
+            Optional<Post> post = postRepository.findById(postId);
+            Post postEntity = post.orElseThrow(() -> new CustomException("Post not found", HttpStatus.NOT_FOUND));
+            PostRes postRes = postMapper.toDtoTwo(postEntity);
+            if (Long.valueOf(postEntity.getUser().getId()).equals(userId)) {
+                postRes.setDeletable(true);
+            } else {
+                postRes.setDeletable(false);
+            }
+            if (post.isEmpty())
+                throw new CustomException("post with Id: " + postId + " not found", HttpStatus.NOT_FOUND);
+            PostRes res = postMapper.toDtoTwo(post.get());
 //        PostRes res = TransferObject.convert(post.get(), PostRes.class);
-        return res;
+            return postRes;
+
+        }else {
+
+            Optional<Post> post = postRepository.findById(postId);
+            if (post.isEmpty())
+                throw new CustomException("post with Id: " + postId + " not found", HttpStatus.NOT_FOUND);
+            PostRes res = postMapper.toDtoTwo(post.get());
+//        PostRes res = TransferObject.convert(post.get(), PostRes.class);
+            return res;
+        }
     }
 
     public List<PostRes> getPostByCategory(Integer categoryId) {
