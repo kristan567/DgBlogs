@@ -109,12 +109,44 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentRes> getCommentsByPost(Integer postId) {
-        Post post = postRepository.findById(postId).orElseThrow(()-> new CustomException("post Not Found with postId" + postId, HttpStatus.NOT_FOUND));
-        List<Comment> comments = commentRepository.findByPost(post);
+        Long userId = null;
 
-        return comments.stream()
-                .map(comment->commentMapper.toDtoTwo(comment))
-                .collect(Collectors.toList());
+        try{
+            userId = authenticationFacade.getAuthentication().getUserId();
+        }catch (Exception e){
+            userId = null;
+        }
+
+
+        if(userId != null){
+            Post post = postRepository.findById(postId).orElseThrow(()-> new CustomException("post not found", HttpStatus.NOT_FOUND));
+            List<Comment> comments = commentRepository.findByPost(post);
+            List<CommentRes> res = new ArrayList<>();
+
+            Long finalUserId = userId;
+            comments.forEach(comment -> {
+                CommentRes commentRes = commentMapper.toDtoTwo(comment);
+                if(finalUserId.equals(comment.getUser().getId())){
+                    commentRes.setDeletable(true);
+                }else{
+                    commentRes.setDeletable(false);
+                }
+
+                res.add(commentRes);
+            });
+
+            return res;
+
+        }else{
+            Post post = postRepository.findById(postId).orElseThrow(()-> new CustomException("post Not Found with postId" + postId, HttpStatus.NOT_FOUND));
+            List<Comment> comments = commentRepository.findByPost(post);
+
+            return comments.stream()
+                    .map(comment->commentMapper.toDtoTwo(comment))
+                    .collect(Collectors.toList());
+        }
+
+
     }
 
     @Override

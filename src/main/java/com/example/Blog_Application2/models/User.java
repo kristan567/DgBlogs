@@ -74,6 +74,10 @@ public class User {
     private Date addDate;
 
 
+    private boolean archived;
+
+
+
     public long getId() {
         return id;
     }
@@ -187,4 +191,11 @@ public class User {
     }
 
 
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
+    }
 }

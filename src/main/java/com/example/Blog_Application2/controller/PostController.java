@@ -47,9 +47,9 @@ public class PostController {
     }
 
     @Operation(summary = "create post with image")
-    @PostMapping("/category/{categoryId}/image/posts")
-    public ResponseEntity<?> createPostWithImage(@ModelAttribute PostReq postReq,@RequestParam("image") MultipartFile image, @PathVariable Integer categoryId){
-        return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPostWithImage(postReq, categoryId,image, path));
+    @PostMapping("/category/image/posts")
+    public ResponseEntity<?> createPostWithImage(@ModelAttribute PostReq postReq,@RequestParam("image") MultipartFile image){
+        return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPostWithImage(postReq,image, path));
     }
 
     @Operation(summary = "update post")

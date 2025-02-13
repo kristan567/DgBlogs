@@ -72,9 +72,9 @@ public class FriendshipServiceImpl implements FriendshipService {
             }
         }
 
-        Friendship friendship = new Friendship();
+        Friendship friendship = new Friendship();         //since req does not have enough data or the given data is being set from the url request is not used here while the status is being updated manually so req not used
         friendship.setSender(sender.get());
-        friendship.setReceiver(receiver.get());
+        friendship.setReceiver(receiver.get());            //if need to give data in jason use friendshipReq so that
         friendship.setStatus(FriendRequestStatus.PENDING);
         friendshipRepository.save(friendship);
 

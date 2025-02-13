@@ -22,6 +22,8 @@ public class PostReq {
 
     private String imageName;
 
+    private Integer categoryId;
+
 
     public String getTitle() {
         return title;

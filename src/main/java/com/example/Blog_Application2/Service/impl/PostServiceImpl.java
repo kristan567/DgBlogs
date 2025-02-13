@@ -81,14 +81,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostRes createPostWithImage(PostReq postReq, Integer categoryId, MultipartFile image, String path) {
+    public PostRes createPostWithImage(PostReq postReq, MultipartFile image, String path) {
         Long userId = authenticationFacade.getAuthentication().getUserId();
         User user = this.userRepository.findById(userId).orElseThrow(()->new CustomException("User with Id "+ userId+" Not found", HttpStatus.NOT_FOUND));
-        Category category = this.categoryRepo.findById(Long.valueOf(categoryId)).orElseThrow(()->new CustomException("Category with Id "+ categoryId + " Not found", HttpStatus.NOT_FOUND));
+        Category category = this.categoryRepo.findById(Long.valueOf(postReq.getCategoryId())).orElseThrow(()->new CustomException("Category with Id "+ postReq.getCategoryId() + " Not found", HttpStatus.NOT_FOUND));
 
         Post post = postMapper.toEntity((postReq));
         String filename = fileService.uploadImage(path, image);
-        post.setImageName(filename);
+        if(filename == null){
+            post.setImageName("default.png");
+        }else{
+            post.setImageName(filename);
+        }
         post.setAddDate(new Date());
         post.setUser(user);
         post.setCategory(category);

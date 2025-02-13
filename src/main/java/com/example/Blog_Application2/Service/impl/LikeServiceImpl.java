@@ -18,6 +18,7 @@ import com.example.Blog_Application2.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -115,6 +116,9 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     public List<LikeRes> getPostLikes(int postId) {
+
+        Long userId = authenticationFacade.getAuthentication().getUserId();
+
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException("Post not found", HttpStatus.NOT_FOUND));
 //        return likeRepository.findByPost(post).stream()
@@ -129,12 +133,22 @@ public class LikeServiceImpl implements LikeService {
 //                    return likeRes;
 //                })
 //                .collect(Collectors.toList());
-
+        Long finalUserId = userId;
         List<Like> likes = likeRepository.findByPost(post);
+        List<LikeRes> res = new ArrayList<>();
+
+        likes.forEach(like ->{
+            LikeRes likeRes = likeMapper.toDtoTwo(like);
+            if(finalUserId.equals())
+        })
+
 
         return likes.stream()
                 .map(like->likeMapper.toDtoTwo(like))
                 .collect(Collectors.toList());
+
+
+
     }
 
     @Override
@@ -168,6 +182,7 @@ public class LikeServiceImpl implements LikeService {
         User user = userRepository.findById(userId).orElseThrow(()->new CustomException("user with Id: " + userId + "Not Found", HttpStatus.NOT_FOUND));
 
         List<Like> likes = likeRepository.findUserlike(user);
+
 
 
         return likes.stream()

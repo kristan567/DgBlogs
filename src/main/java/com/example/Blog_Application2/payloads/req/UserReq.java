@@ -21,13 +21,14 @@ public class UserReq {
     @NotEmpty(message = "Last name cannot be blank")
     private String lastName;
 
+//    @NotEmpty(message = "Email cannot be null")
     @Email(message = "Invalid Email")
     private String email;
 
     @Length(min = 5, max = 15, message = "password must be 5 to 15 character long")
     private String password;
 
-    @NotEmpty(message = "confirm Password is required")
+//    @NotEmpty(message = "confirm Password is required")
     private String confirmPassword;
 
     private Role role;

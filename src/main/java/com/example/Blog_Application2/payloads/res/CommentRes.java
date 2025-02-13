@@ -35,6 +35,10 @@ public class CommentRes {
 
     private UserRes user;
 
+    private boolean deletable;
+
+
+
 
     public int getId() {
         return id;
@@ -82,5 +86,13 @@ public class CommentRes {
 
     public void setUser(UserRes user) {
         this.user = user;
+    }
+
+    public boolean isDeletable() {
+        return deletable;
+    }
+
+    public void setDeletable(boolean deletable) {
+        this.deletable = deletable;
     }
 }

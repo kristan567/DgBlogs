@@ -14,7 +14,7 @@ public interface PostService {
     //create
     PostRes createPost(PostReq postreq, Integer categoryId);
 
-    PostRes createPostWithImage(PostReq postReq, Integer categoryId, MultipartFile image, String path);
+    PostRes createPostWithImage(PostReq postReq, MultipartFile image, String path);
 
     //update
     PostRes updatePost(PostReq postReq, Integer postId);

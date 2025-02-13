@@ -24,7 +24,7 @@ public interface UserService {
 
     String deleteById();
 
-    UserRes updateById(long id, UserReq userReq);
+    UserRes updateById( UserReq userReq);
 
     UserRes findByEmail(String email);
 

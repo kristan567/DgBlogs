@@ -91,9 +91,9 @@ public class UserController {
     @Operation(summary = "login for the user")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginReq loginReq) {        //marks the format that it should be from loginreq
-        Authentication authentication = authenticationManager.authenticate(        //object creation but with authenticating the value of token
+        Authentication authentication = authenticationManager.authenticate(        //object creation but with authenticating the value of token    // authentication token is generated from username and password, authenticate validates the credentials
                 new UsernamePasswordAuthenticationToken(loginReq.getUsername(), loginReq.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);          //The SecurityContext is used throughout the application to identify the currently authenticated user.
+        SecurityContextHolder.getContext().setAuthentication(authentication);          //The SecurityContext is used throughout the application to identify the currently authenticated user.(currently logged in user)
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginReq.getUsername());        //feteh user details from getusername and pass to the token for generation
         final String token = jwtUtil.generateToken(userDetails);      //  Calls a utility class (jwtUtil) to create a JWT token using the user's details.
         return ResponseEntity.ok().body(new LoginRes(token));       //Sends the token back to the client, which will store it (usually in localStorage, sessionStorage, or cookies) and include it in future requests for authentication.
@@ -131,9 +131,9 @@ public class UserController {
     }
 
     @Operation(summary = "update the user")
-    @PutMapping("/user/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable("id") long id, @Valid @RequestBody UserReq user) {
-        return ResponseEntity.ok().body(userService.updateById(id, user));
+    @PutMapping("/update-user")
+    public ResponseEntity<?> updateUser( @Valid @RequestBody UserReq user) {
+        return ResponseEntity.ok().body(userService.updateById( user));
     }
 
 //    @PreAuthorize("hasAuthority('ADMIN')")

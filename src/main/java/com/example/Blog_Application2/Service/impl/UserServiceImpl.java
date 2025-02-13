@@ -168,6 +168,12 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(passReq.getOldPassword(), currentUser.getPassword())) {
             throw new CustomException("Old password is not correct", HttpStatus.BAD_REQUEST);
         }
+        if(!passReq.getNewPassword().equals(passReq.getConfirmPassword()))
+            throw new CustomException("Password should match", HttpStatus.BAD_REQUEST);
+
+        if(passReq.getOldPassword().equals(passReq.getNewPassword()))
+            throw new CustomException("Password must be different then older ones", HttpStatus.BAD_REQUEST);
+
         currentUser.setPassword(passwordEncoder.encode(passReq.getNewPassword()));
         userRepository.save(currentUser);
 
@@ -185,17 +191,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRes updateById(long id, UserReq userReq) {
+    public UserRes updateById( UserReq userReq) {
         Long userId = authenticationFacade.getAuthentication().getUserId();
 
-        User user = userRepository.findById(id).get();
+        User user = userRepository.findById(userId).get();
         if(userId != user.getId()){
             throw new CustomException("user is not valid to update current user", HttpStatus.BAD_REQUEST);
         }
         user.setFirstName(userReq.getFirstName().trim());
         user.setMiddleName(userReq.getMiddleName().trim());
         user.setLastName(userReq.getLastName().trim());
-        user.setEmail(userReq.getEmail().trim());
+    //        if (userRepository.existsByEmail(userReq.getEmail())) {
+    //            throw new CustomException("Email already exists", HttpStatus.BAD_REQUEST);
+    //        }
+//        user.setEmail(userReq.getEmail().trim());
         user.setPhone(userReq.getPhone().trim());
         userRepository.save(user);
         return findById(user.getId());

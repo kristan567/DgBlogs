@@ -21,4 +21,7 @@ public interface FriendshipMapper extends MapperClass<Friendship, FriendshipReq,
 //    FriendPostRes toDtoThree(FriendPostRes friendPostRes);
 
 
+//    Friendship toEntity(FriendshipReq friendshipReq);
+
+
 }
