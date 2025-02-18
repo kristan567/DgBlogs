@@ -14,7 +14,15 @@ import java.util.List;
 public interface LikeRepository extends JpaRepository<Like,Integer> {
 
     List<Like> findByPost(Post post);
+
+    @Query(value = "Select * from likes  where post_id = :postId and is_Like = 1", nativeQuery = true)   //this query are for getting a flag if the user has liked the post or not
+    List<Like> findPostWithLikeOnly(Integer postId);
+
+    @Query(value = "Select * from likes  where post_id = :postId and is_dis_Like = 1", nativeQuery = true) //this query are for getting a flag if the user has disliked the post or not
+    List<Like> findPostWithDislikeOnly(Integer postId);
+
     List<Like> findByUser(User user);
+
     List<Like> findByUserAndPost(User user, Post post);
 
     @Query(value = "Select * from likes  where is_Like = 1", nativeQuery = true)

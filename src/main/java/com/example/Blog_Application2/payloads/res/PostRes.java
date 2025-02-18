@@ -39,7 +39,9 @@ public class PostRes {
 
 //    private Set<CommentRes> comments = new HashSet<>();
 
+    private boolean LikedByUser;
 
+    private boolean DisLikedByUser;
 
 
     public CategoryRes getCategory() {
@@ -116,5 +118,21 @@ public class PostRes {
 
     public void setDeletable(boolean deletable) {
         this.deletable = deletable;
+    }
+
+    public boolean isLikedByUser() {
+        return LikedByUser;
+    }
+
+    public void setLikedByUser(boolean likedByUser) {
+        LikedByUser = likedByUser;
+    }
+
+    public boolean isDisLikedByUser() {
+        return DisLikedByUser;
+    }
+
+    public void setDisLikedByUser(boolean disLikedByUser) {
+        DisLikedByUser = disLikedByUser;
     }
 }

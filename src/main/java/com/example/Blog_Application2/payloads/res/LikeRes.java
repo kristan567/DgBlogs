@@ -19,6 +19,8 @@ public class LikeRes {
     private boolean isLike;
     private boolean isDislike;
 
+    private boolean likedByUser;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private LocalDateTime actionDate;
 
@@ -72,5 +74,14 @@ public class LikeRes {
 
     public void setDisLike(boolean disLike) {
         isDislike = disLike;
+    }
+
+
+    public boolean isLikedByUser() {
+        return likedByUser;
+    }
+
+    public void setLikedByUser(boolean likedByUser) {
+        this.likedByUser = likedByUser;
     }
 }

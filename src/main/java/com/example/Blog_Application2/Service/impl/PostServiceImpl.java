@@ -6,6 +6,7 @@ import com.example.Blog_Application2.Service.mappers.PostMapper;
 import com.example.Blog_Application2.Service.mappers.UserMapper;
 import com.example.Blog_Application2.config.secuirty.AuthenticationFacade;
 import com.example.Blog_Application2.exception.CustomException;
+import com.example.Blog_Application2.models.Like;
 import com.example.Blog_Application2.models.Post;
 import com.example.Blog_Application2.models.User;
 import com.example.Blog_Application2.models.Category;
@@ -13,6 +14,7 @@ import com.example.Blog_Application2.payloads.req.CategoryReq;
 import com.example.Blog_Application2.payloads.req.PostReq;
 import com.example.Blog_Application2.payloads.res.*;
 import com.example.Blog_Application2.repository.CategoryRepo;
+import com.example.Blog_Application2.repository.LikeRepository;
 import com.example.Blog_Application2.repository.PostRepository;
 import com.example.Blog_Application2.repository.UserRepository;
 import com.example.Blog_Application2.utils.TransferObject;
@@ -47,9 +49,11 @@ public class PostServiceImpl implements PostService {
     private final FileService fileService;
     private final AuthenticationFacade authenticationFacade;
     private final UserMapper userMapper;
+    private final LikeRepository likeRepository;
 
 
-    public PostServiceImpl(PostRepository postRepository, PostMapper postMapper, UserRepository userRepository, CategoryRepo categoryRepo, FileService fileService, AuthenticationFacade authenticationFacade, UserMapper userMapper) {
+
+    public PostServiceImpl(PostRepository postRepository, PostMapper postMapper, UserRepository userRepository, CategoryRepo categoryRepo, FileService fileService, AuthenticationFacade authenticationFacade, UserMapper userMapper, LikeRepository likeRepository) {
         this.postRepository = postRepository;
         this.postMapper = postMapper;
         this.userRepository = userRepository;
@@ -57,6 +61,7 @@ public class PostServiceImpl implements PostService {
         this.fileService = fileService;
         this.authenticationFacade = authenticationFacade;
         this.userMapper =userMapper;
+        this.likeRepository = likeRepository;
     }
 
     @Override
@@ -148,8 +153,6 @@ public class PostServiceImpl implements PostService {
 
         return postMapper.toDtoTwo(post);
     }
-
-
 
     @Override
     public String deletePost(Integer postId) {
@@ -268,13 +271,25 @@ public class PostServiceImpl implements PostService {
         if(userId != null) {
 
             Optional<Post> post = postRepository.findById(postId);
+//            Post postWithoutOptional = post.get();  // Extract Post from Optional
+//            List<Like> likes = likeRepository.findByPost(postWithoutOptional);
             Post postEntity = post.orElseThrow(() -> new CustomException("Post not found", HttpStatus.NOT_FOUND));
             PostRes postRes = postMapper.toDtoTwo(postEntity);
+            List<Like> likes = likeRepository.findPostWithLikeOnly(postId);
+            List<Like> dislikes = likeRepository.findPostWithDislikeOnly(postId);
             if (Long.valueOf(postEntity.getUser().getId()).equals(userId)) {
                 postRes.setDeletable(true);
             } else {
                 postRes.setDeletable(false);
             }
+            Long finalUserId = userId;
+            boolean userHasLiked = likes.stream()
+                    .anyMatch(like -> like.getUser().getId() == (finalUserId));
+            postRes.setLikedByUser(userHasLiked);
+
+            boolean userHasDisliked = dislikes.stream().anyMatch(dislike -> dislike.getUser().getId() == (finalUserId));
+            postRes.setDisLikedByUser(userHasDisliked);
+
             if (post.isEmpty())
                 throw new CustomException("post with Id: " + postId + " not found", HttpStatus.NOT_FOUND);
             PostRes res = postMapper.toDtoTwo(post.get());
@@ -342,7 +357,6 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public List<PostRes> searchPosts(String Keyword) {
         List<Post> posts = this.postRepository.searchByTitle("%"+ Keyword+ "%");
@@ -350,7 +364,6 @@ public class PostServiceImpl implements PostService {
         return posts.stream().map((post)->this.postMapper.toDtoTwo(post))
                 .collect(Collectors.toList());
     }
-
 
     @Override
         public String sharePosts(Integer categoryId,Integer postId){

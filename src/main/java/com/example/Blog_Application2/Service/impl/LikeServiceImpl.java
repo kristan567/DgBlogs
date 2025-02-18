@@ -135,16 +135,22 @@ public class LikeServiceImpl implements LikeService {
 //                .collect(Collectors.toList());
         Long finalUserId = userId;
         List<Like> likes = likeRepository.findByPost(post);
-        List<LikeRes> res = new ArrayList<>();
-
-        likes.forEach(like ->{
-            LikeRes likeRes = likeMapper.toDtoTwo(like);
-            if(finalUserId.equals())
-        })
+//        List<LikeRes> res = new ArrayList<>();
+//
+//        likes.forEach(like ->{
+//            LikeRes likeRes = likeMapper.toDtoTwo(like);
+//            if(finalUserId.equals(like.getUser().getId()));
+//        })
 
 
         return likes.stream()
-                .map(like->likeMapper.toDtoTwo(like))
+                .map(like->{
+                    LikeRes likeRes = likeMapper.toDtoTwo(like);
+                    if(finalUserId.equals(like.getUser().getId())){
+                        likeRes.setLikedByUser(true);
+                    }
+                    return likeRes;
+                })
                 .collect(Collectors.toList());
 
 
@@ -203,8 +209,6 @@ public class LikeServiceImpl implements LikeService {
                 .collect(Collectors.toList());
     }
 
-
-
     @Override
     public Integer getPostLikeCount(int postId) {
         Post post = postRepository.findById(postId)
@@ -234,8 +238,5 @@ public class LikeServiceImpl implements LikeService {
         long postIdLong = post.getPostId();
         return (int) likeRepository.countByPostIsLikeAndIsDisLike(postIdLong, true, true);
     }
-
-
-
 
 }

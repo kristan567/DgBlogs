@@ -1,32 +1,52 @@
 package com.example.Blog_Application2.controller;
 
 
-import com.example.Blog_Application2.Service.AdminPanel;
-import com.example.Blog_Application2.Service.LikeService;
-import io.swagger.v3.oas.annotations.Operation;
+import com.example.Blog_Application2.Service.impl.AdminPanelImpl;
+import com.example.Blog_Application2.payloads.req.UserReq;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import com.example.Blog_Application2.Service.AdminPanel;
+import com.example.Blog_Application2.payloads.res.AdminTotalInfoRes;
+
+import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/admin")
+
 public class AdminController {
 
-    private final AdminPanel adminPanel;
+    @Autowired
+    private AdminPanel adminPanel;
+
+    @Value("${project.image}")
+    private String path;
 
 
-    public AdminController(AdminPanel adminPanel) {
-        this.adminPanel = adminPanel;
+    
 
-    }
 
+
+
+
+//    public AdminController(AdminPanel adminPanel) {
+//
+//        this.adminPanel = adminPanel;
+//
+//    }
+
+  
     @Operation(summary = "Get all total users")
     @GetMapping("/getAllUsers")
     private ResponseEntity<Integer> TotalUsers(){
         return ResponseEntity.status(HttpStatus.OK).body(adminPanel.getAllUsersCount());
     }
+
 
     @Operation(summary = "Get total likes counts")
     @GetMapping("/getAllLikes")
@@ -58,12 +78,22 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(adminPanel.getAllCommentsReply());
     }
 
+    @Operation(summary = "get all count data")
+//    @PreAuthorize("hasAuthority('USER')")
+    @GetMapping("/getAllCountData")
+    private ResponseEntity<AdminTotalInfoRes> getAllCountData(){
+        return ResponseEntity.status(HttpStatus.OK).body(adminPanel.getAllCountData());
+    }
+
+
+
     @Operation(summary = "get most used category")
     @GetMapping("/mostUsedCategory")
     private ResponseEntity<?> getMostUsedCategory(){
         return ResponseEntity.status(HttpStatus.OK).body(adminPanel.getMostUsedCategory());
     }
 
+//    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "get top users ")
     @GetMapping("/topUser")
     private ResponseEntity<?> getTopUser(){
@@ -86,6 +116,16 @@ public class AdminController {
     @GetMapping("/userByMonth")
     private ResponseEntity<?> userByMonth(){
         return ResponseEntity.status(HttpStatus.OK).body(adminPanel.AddedUserInMonth());
+    }
+
+
+    @Operation(summary = "this is for creating admin with image")
+    @PostMapping("/createAdmin")
+    private ResponseEntity<?> createAdmin(@ModelAttribute UserReq userReq, @RequestParam("image") MultipartFile image){
+
+        return ResponseEntity.status(HttpStatus.OK).body(adminPanel.createUser(userReq, image, path));
+
+
     }
 
 

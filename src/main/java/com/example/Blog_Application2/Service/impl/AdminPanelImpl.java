@@ -1,18 +1,25 @@
 package com.example.Blog_Application2.Service.impl;
 
 import com.example.Blog_Application2.Service.AdminPanel;
+import com.example.Blog_Application2.Service.EmailService;
+import com.example.Blog_Application2.Service.FileService;
 import com.example.Blog_Application2.Service.mappers.CategoryMapper;
 import com.example.Blog_Application2.Service.mappers.PostMapper;
 import com.example.Blog_Application2.Service.mappers.UserMapper;
+import com.example.Blog_Application2.enums.Role;
+import com.example.Blog_Application2.exception.CustomException;
 import com.example.Blog_Application2.models.Category;
 import com.example.Blog_Application2.models.Post;
 import com.example.Blog_Application2.models.User;
+import com.example.Blog_Application2.payloads.req.MailBody;
+import com.example.Blog_Application2.payloads.req.UserReq;
 import com.example.Blog_Application2.payloads.res.*;
 import com.example.Blog_Application2.repository.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -34,8 +41,12 @@ public class AdminPanelImpl implements AdminPanel {
 
     private final PostMapper postMapper;
 
+    private final EmailService emailService;
 
-    public AdminPanelImpl(LikeRepository likeRepository, UserRepository userRepository, PostRepository postRepository, CommentRepository commentRepository, CommentReplyRepository commentReplyRepository, UserMapper userMapper, CategoryMapper categoryMapper, PostMapper postMapper) {
+    private final FileService fileService;
+
+
+    public AdminPanelImpl(LikeRepository likeRepository, UserRepository userRepository, PostRepository postRepository, CommentRepository commentRepository, CommentReplyRepository commentReplyRepository, UserMapper userMapper, CategoryMapper categoryMapper, PostMapper postMapper, EmailService emailService, FileService fileService) {
         this.likeRepository = likeRepository;
         this.userRepository = userRepository;
         this.postRepository = postRepository;
@@ -44,7 +55,10 @@ public class AdminPanelImpl implements AdminPanel {
         this.userMapper = userMapper;
         this.categoryMapper = categoryMapper;
         this.postMapper =  postMapper;
+        this.emailService = emailService;
+        this.fileService = fileService;
     }
+
 
     @Override
     public Integer getAllLikesCount() {
@@ -77,9 +91,37 @@ public class AdminPanelImpl implements AdminPanel {
     }
 
     @Override
+    public AdminTotalInfoRes getAllCountData(){
+        Integer totalUser = userRepository.countTotalUsers();
+
+        Integer totalPost = postRepository.countTotalPosts();
+
+        Integer totalLike = likeRepository.countToAlLikes(true);
+
+        Integer totalDisLike = likeRepository.countToAlDisLikes(true);
+
+        Long totalComment =  commentRepository.count();
+
+        Long totalCommentReply = commentReplyRepository.count();
+
+
+        AdminTotalInfoRes res = new AdminTotalInfoRes();
+        res.setTotalUser(totalUser);
+        res.setTotalPost(totalPost);
+        res.setTotalLike(totalLike);
+        res.setTotalDisLike(totalDisLike);
+        res.setTotalComment(totalComment);
+        res.setTotalCommentReply(totalCommentReply);
+
+
+        return res;
+
+    }
+
+    @Override
     public List<CategoryUsageRes> getMostUsedCategory() {
         List<Object[]> categoryUsage = postRepository.findCategoryUsage();
-        if (!categoryUsage.isEmpty()) {
+        if (!categoryUsage.isEmpty()){
             List<CategoryUsageRes> result = new ArrayList<>();
             for (Object[] row : categoryUsage) {
                 Category category = (Category) row[0];  // category ID
@@ -159,6 +201,38 @@ public class AdminPanelImpl implements AdminPanel {
             throw new IllegalStateException("Something Went Wrong");
         }
 
+
+    }
+
+    @Override
+    public UserRes createUser(UserReq userReq, MultipartFile image, String path) {
+        if(!userReq.getPassword().equals(userReq.getConfirmPassword())){
+            throw new CustomException("The Password did not match", HttpStatus.BAD_REQUEST);
+        }
+        if(userRepository.existsByEmail(userReq.getEmail())){
+            throw new CustomException("user already exists", HttpStatus.BAD_REQUEST);
+        }
+
+        User user = userMapper.toEntity(userReq);
+        String fileName = fileService.uploadImage(path, image);
+        user.setImageName(fileName);
+        if (user.getRole()==null ){
+            user.setRole(Role.ADMIN);
+        }
+        userRepository.save(user);
+
+
+        String userEmail = userReq.getEmail();
+        String userPassword = userReq.getPassword();
+
+        MailBody mailBody = MailBody.builder()
+                .to(userEmail)
+                .text("Your Account Has Been created By Credentials\n" +"Your Username: "+ userEmail + "\n"+"Your Password: "+ userPassword)
+                .subject("Account Creation")
+                .build();
+
+        emailService.sendSimpleMessage(mailBody);
+        return userMapper.toDtoTwo(user);
 
     }
 

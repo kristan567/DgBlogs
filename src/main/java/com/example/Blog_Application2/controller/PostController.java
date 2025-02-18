@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -72,6 +73,7 @@ public class PostController {
     }
 
     @Operation(summary = "get post by the userId ")
+
     @GetMapping("user/{userId}/posts")
     public ResponseEntity<List<PostRes>>  getPostsByUser(@PathVariable Integer userId){
         List<PostRes> posts = this.postService.getPostsByUser(userId);
@@ -92,7 +94,7 @@ public class PostController {
         return new ResponseEntity<List<PostRes>>(posts, HttpStatus.OK);
     }
 
-    @Operation(summary = "update post")
+    @Operation(summary = "get post by id")
     @GetMapping("/post/{postId}")
     public ResponseEntity<?> getPost(@PathVariable("postId") Integer postId){
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPostById(postId));

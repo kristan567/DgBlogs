@@ -1,6 +1,8 @@
 package com.example.Blog_Application2.Service;
 
+import com.example.Blog_Application2.payloads.req.UserReq;
 import com.example.Blog_Application2.payloads.res.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,6 +20,8 @@ public interface AdminPanel {
 
     Integer getAllCommentsReply();
 
+    AdminTotalInfoRes getAllCountData();
+
     List<CategoryUsageRes> getMostUsedCategory();
 
     List<TopUserRes> getMostUser();
@@ -27,6 +31,8 @@ public interface AdminPanel {
     List<DailyPost> getDailyPost();
 
     List<AddedUserInMonth> AddedUserInMonth();
+
+    UserRes createUser(UserReq userReq, MultipartFile image, String path);
 
 
 }
