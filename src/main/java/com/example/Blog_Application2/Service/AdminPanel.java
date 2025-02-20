@@ -26,6 +26,8 @@ public interface AdminPanel {
 
     List<TopUserRes> getMostUser();
 
+    List<UserWhoLikedMost> getUserWhoLikedMost();
+
     List<TopPostRes> getPopularPost();
 
     List<DailyPost> getDailyPost();

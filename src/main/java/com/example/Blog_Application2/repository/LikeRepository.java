@@ -50,5 +50,9 @@ public interface LikeRepository extends JpaRepository<Like,Integer> {
     List<Object[]> findTopPost();  //worked after making it true instead of 1
 
 
+    @Query(value = "select l.user, count(l.id) AS likes from Like l where l.isLike = true group by l.user")
+    List<Object[]> topUserWhoLikedThePostMost();
+
+
 
 }

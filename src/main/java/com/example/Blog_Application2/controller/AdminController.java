@@ -21,112 +21,120 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class AdminController {
 
-    @Autowired
-    private AdminPanel adminPanel;
+
+    private final AdminPanel adminPanel;
 
     @Value("${project.image}")
     private String path;
 
 
-    
+    public AdminController(AdminPanel adminPanel) {
 
+        this.adminPanel = adminPanel;
 
+    }
 
-
-
-//    public AdminController(AdminPanel adminPanel) {
-//
-//        this.adminPanel = adminPanel;
-//
-//    }
-
-  
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Get all total users")
     @GetMapping("/getAllUsers")
-    private ResponseEntity<Integer> TotalUsers(){
+    public ResponseEntity<Integer> TotalUsers(){
         return ResponseEntity.status(HttpStatus.OK).body(adminPanel.getAllUsersCount());
     }
 
-
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Get total likes counts")
     @GetMapping("/getAllLikes")
-    private ResponseEntity<?> totalLikes(){
+    public ResponseEntity<?> totalLikes(){
         return ResponseEntity.status(HttpStatus.OK).body(adminPanel.getAllLikesCount());
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Get all dislike counts")
     @GetMapping("/getAllDisLikes")
-    private ResponseEntity<?> totalDisLikes(){
+    public ResponseEntity<?> totalDisLikes(){
         return ResponseEntity.status(HttpStatus.OK).body(adminPanel.getAllDisLikeCount());
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Get all total post")
     @GetMapping("/getAllPost")
-    private ResponseEntity<?> totalPosts(){
+    public ResponseEntity<?> totalPosts(){
         return ResponseEntity.status(HttpStatus.OK).body(adminPanel.getAllPostCount());
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "get all comments counts")
     @GetMapping("/getAllComments")
-    private ResponseEntity<?> Comments(){
+    public ResponseEntity<?> Comments(){
         return ResponseEntity.status(HttpStatus.OK).body(adminPanel.getAllCommentsCount());
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "get comments reply count")
     @GetMapping("/getAllCommentsReply")
-    private ResponseEntity<?> getAllCommentsReply(){
+    public ResponseEntity<?> getAllCommentsReply(){
         return ResponseEntity.status(HttpStatus.OK).body(adminPanel.getAllCommentsReply());
     }
 
     @Operation(summary = "get all count data")
-//    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/getAllCountData")
-    private ResponseEntity<AdminTotalInfoRes> getAllCountData(){
+    public ResponseEntity<AdminTotalInfoRes> getAllCountData(){
         return ResponseEntity.status(HttpStatus.OK).body(adminPanel.getAllCountData());
     }
 
-
-
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "get most used category")
     @GetMapping("/mostUsedCategory")
-    private ResponseEntity<?> getMostUsedCategory(){
+    public ResponseEntity<?> getMostUsedCategory(){
         return ResponseEntity.status(HttpStatus.OK).body(adminPanel.getMostUsedCategory());
     }
 
-//    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "get top users ")
     @GetMapping("/topUser")
-    private ResponseEntity<?> getTopUser(){
+    public ResponseEntity<?> getTopUser(){
         return ResponseEntity.status(HttpStatus.OK).body(adminPanel.getMostUser());
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "get user who liked most")
+    @GetMapping("/topUserWhoLikedMost")
+    public ResponseEntity<?> getUserWhoLikedMost(){
+        return ResponseEntity.status(HttpStatus.OK).body(adminPanel.getUserWhoLikedMost());
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "get top popular most")
     @GetMapping("/topPost")
-    private ResponseEntity<?> getTopPost(){
+    public ResponseEntity<?> getTopPost(){
         return ResponseEntity.status(HttpStatus.OK).body(adminPanel.getPopularPost());
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "get post increase or decrease in a day")
     @GetMapping("/postByMonth")
-    private ResponseEntity<?> postByMonth(){
+    public ResponseEntity<?> postByMonth(){
         return ResponseEntity.status(HttpStatus.OK).body(adminPanel.getDailyPost());
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "user increase/decrease in a month")
     @GetMapping("/userByMonth")
-    private ResponseEntity<?> userByMonth(){
+    public ResponseEntity<?> userByMonth(){
         return ResponseEntity.status(HttpStatus.OK).body(adminPanel.AddedUserInMonth());
     }
 
-
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "this is for creating admin with image")
     @PostMapping("/createAdmin")
-    private ResponseEntity<?> createAdmin(@ModelAttribute UserReq userReq, @RequestParam("image") MultipartFile image){
+    public ResponseEntity<?> createAdmin(@ModelAttribute UserReq userReq, @RequestParam("image") MultipartFile image){
 
         return ResponseEntity.status(HttpStatus.OK).body(adminPanel.createUser(userReq, image, path));
-
-
     }
+
+
+
 
 
 }

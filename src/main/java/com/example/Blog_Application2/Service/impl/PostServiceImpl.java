@@ -274,6 +274,7 @@ public class PostServiceImpl implements PostService {
 //            Post postWithoutOptional = post.get();  // Extract Post from Optional
 //            List<Like> likes = likeRepository.findByPost(postWithoutOptional);
             Post postEntity = post.orElseThrow(() -> new CustomException("Post not found", HttpStatus.NOT_FOUND));
+            postEntity.setViewCount(postEntity.getViewCount() + 1);
             PostRes postRes = postMapper.toDtoTwo(postEntity);
             List<Like> likes = likeRepository.findPostWithLikeOnly(postId);
             List<Like> dislikes = likeRepository.findPostWithDislikeOnly(postId);
@@ -290,6 +291,8 @@ public class PostServiceImpl implements PostService {
             boolean userHasDisliked = dislikes.stream().anyMatch(dislike -> dislike.getUser().getId() == (finalUserId));
             postRes.setDisLikedByUser(userHasDisliked);
 
+
+
             if (post.isEmpty())
                 throw new CustomException("post with Id: " + postId + " not found", HttpStatus.NOT_FOUND);
             PostRes res = postMapper.toDtoTwo(post.get());
@@ -301,6 +304,12 @@ public class PostServiceImpl implements PostService {
             Optional<Post> post = postRepository.findById(postId);
             if (post.isEmpty())
                 throw new CustomException("post with Id: " + postId + " not found", HttpStatus.NOT_FOUND);
+
+            Post postEntity = post.orElseThrow(() -> new CustomException("Post not found", HttpStatus.NOT_FOUND));
+            postEntity.setViewCount(postEntity.getViewCount() + 1);
+
+           postRepository.save(postEntity);
+
             PostRes res = postMapper.toDtoTwo(post.get());
 //        PostRes res = TransferObject.convert(post.get(), PostRes.class);
             return res;

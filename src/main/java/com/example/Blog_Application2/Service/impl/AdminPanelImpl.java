@@ -153,6 +153,23 @@ public class AdminPanelImpl implements AdminPanel {
     }
 
     @Override
+    public List<UserWhoLikedMost> getUserWhoLikedMost(){
+        List<Object[]> topUserLikes = likeRepository.topUserWhoLikedThePostMost();
+        if (!topUserLikes.isEmpty()){
+            List<UserWhoLikedMost> result = new ArrayList<>();
+            for (Object[] row : topUserLikes){
+                User user = (User) row[0];
+                Long likes = (Long) row[1];
+                UserRes userId = userMapper.toDtoTwo(user);
+                result.add(new UserWhoLikedMost(userId, likes));
+            }
+
+            return result;
+        }
+        throw new IllegalStateException("Something Went Wrong");
+    }
+
+    @Override
     public List<TopPostRes> getPopularPost(){
         List<Object[]> topPost = likeRepository.findTopPost();
         if(!topPost.isEmpty()){
@@ -167,6 +184,8 @@ public class AdminPanelImpl implements AdminPanel {
         }
         throw new IllegalStateException("Something Went Wrong");
     }
+
+
 
     @Override
     public List<DailyPost> getDailyPost() {

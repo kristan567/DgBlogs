@@ -43,6 +43,10 @@ public class PostRes {
 
     private boolean DisLikedByUser;
 
+    private Long viewCount;
+
+
+
 
     public CategoryRes getCategory() {
         return category;
@@ -134,5 +138,13 @@ public class PostRes {
 
     public void setDisLikedByUser(boolean disLikedByUser) {
         DisLikedByUser = disLikedByUser;
+    }
+
+    public Long getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(Long viewCount) {
+        this.viewCount = viewCount;
     }
 }

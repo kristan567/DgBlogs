@@ -55,11 +55,16 @@ public class Post {
     private Set<Like> likes = new HashSet<>();
 
 
+    private Long viewCount = 0L;
 
 
+    public Long getViewCount() {
+        return viewCount;
+    }
 
-
-
+    public void setViewCount(Long viewCount) {
+        this.viewCount = viewCount;
+    }
 
     public Integer getPostId() {
         return postId;
