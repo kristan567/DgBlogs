@@ -21,18 +21,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class AdminController {
 
-
-    private final AdminPanel adminPanel;
+    @Autowired
+    private AdminPanel adminPanel;
 
     @Value("${project.image}")
     private String path;
-
-
-    public AdminController(AdminPanel adminPanel) {
-
-        this.adminPanel = adminPanel;
-
-    }
+    
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Get all total users")

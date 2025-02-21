@@ -102,6 +102,7 @@ public class PostServiceImpl implements PostService {
         post.setUser(user);
         post.setCategory(category);
 
+
         postRepository.save(post);
         return postMapper.toDtoTwo(post);
     }
