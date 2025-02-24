@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -134,6 +135,12 @@ public class UserController {
     @PutMapping("/update-user")
     public ResponseEntity<?> updateUser( @Valid @RequestBody UserReq user) {
         return ResponseEntity.ok().body(userService.updateById( user));
+    }
+
+    @Operation(summary = "update user with image only")
+    @PutMapping("/update-userImage")
+    public ResponseEntity<?> updateUserWithImage(@RequestParam("image") MultipartFile image){
+        return ResponseEntity.ok().body(userService.updateUserImage(image, path));
     }
 
 //    @PreAuthorize("hasAuthority('ADMIN')")

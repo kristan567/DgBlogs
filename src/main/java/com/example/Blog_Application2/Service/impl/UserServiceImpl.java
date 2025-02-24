@@ -211,6 +211,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserRes updateUserImage(MultipartFile image, String path){
+
+        Long userId = authenticationFacade.getAuthentication().getUserId();
+
+        User user = userRepository.findById(userId).orElseThrow(()-> new CustomException("User not found ", HttpStatus.NOT_FOUND));
+
+        if(userId != user.getId()){
+            throw new CustomException("not a valid User to Update this profile", HttpStatus.BAD_REQUEST);
+        }
+        String filename = fileService.uploadImage(path, image);
+        user.setImageName(filename);
+        userRepository.save(user);
+
+        return userMapper.toDtoTwo(user);
+    }
+
+
+    @Override
     public String deleteById() {
         Long userId = authenticationFacade.getAuthentication().getUserId();
         Optional<User> userOptional = userRepository.findById(userId);

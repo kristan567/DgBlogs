@@ -26,6 +26,8 @@ public interface UserService {
 
     UserRes updateById( UserReq userReq);
 
+    UserRes updateUserImage(MultipartFile image, String path);
+
     UserRes findByEmail(String email);
 
     String resetPassword(ResetPassReq passReq);
