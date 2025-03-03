@@ -227,7 +227,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDtoTwo(user);
     }
 
-
     @Override
     public String deleteById() {
         Long userId = authenticationFacade.getAuthentication().getUserId();

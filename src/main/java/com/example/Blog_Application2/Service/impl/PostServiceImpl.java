@@ -111,6 +111,7 @@ public class PostServiceImpl implements PostService {
     public PostRes updatePost(PostReq postReq, Integer postId) {
         Long userId = authenticationFacade.getAuthentication().getUserId();
         Post post = postRepository.findById(postId).orElseThrow(()-> new CustomException("post Not Found", HttpStatus.NOT_FOUND));
+        Category category = categoryRepo.findById(Long.valueOf(postReq.getCategoryId())).orElseThrow(()-> new CustomException("post not found", HttpStatus.NOT_FOUND));
         if(userId != post.getUser().getId()){
             throw new CustomException("not a valid User to Update this post", HttpStatus.BAD_REQUEST);
         }
@@ -118,6 +119,7 @@ public class PostServiceImpl implements PostService {
         post.setTitle(postReq.getTitle().trim());
         post.setContent(postReq.getContent().trim());
 //        post.setImageName(postReq.getImageName().trim());
+        post.setCategory(category);
         post.setAddDate(new Date());
 
         post=postRepository.save(post);

@@ -185,8 +185,6 @@ public class AdminPanelImpl implements AdminPanel {
         throw new IllegalStateException("Something Went Wrong");
     }
 
-
-
     @Override
     public List<DailyPost> getDailyPost() {
         List<Object[]> dailyPostCount = postRepository.postCountByDay();
