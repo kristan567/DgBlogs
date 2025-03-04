@@ -46,4 +46,6 @@ public interface PostRepository  extends JpaRepository<Post, Integer> {
 
     List<Post> findByUserIn(List<User> users);
 
+    @Query("select p from Post p order by viewCount desc limit 2")
+    List<Post> topViewPost ();
 }

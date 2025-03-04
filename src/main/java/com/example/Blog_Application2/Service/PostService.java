@@ -34,6 +34,9 @@ public interface PostService {
 
     PagePostRes getPostByPage(Integer pageNumber, Integer pageSize, String sortBy, String sortDir );
 
+
+    List<PostRes> getTopViewPost();
+
     //get single post
     PostRes getPostById(Integer postId);
 

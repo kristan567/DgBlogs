@@ -95,12 +95,18 @@ public class PostController {
     }
 
     @Operation(summary = "get post by id")
+    @GetMapping("/topViewPost")
+    public ResponseEntity<?> getTopViewPost(){
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getTopViewPost());
+    }
+
+    @Operation(summary = "get post by id")
     @GetMapping("/post/{postId}")
     public ResponseEntity<?> getPost(@PathVariable("postId") Integer postId){
         return ResponseEntity.status(HttpStatus.OK).body(postService.getPostById(postId));
     }
 
-    @Operation(summary = "get all post")
+    @Operation(summary = "get two top post which is viewed")
     @GetMapping("/posts")
     public ResponseEntity<?> getAllPosts(){
         return ResponseEntity.status(HttpStatus.OK).body(postService.getAllPost());

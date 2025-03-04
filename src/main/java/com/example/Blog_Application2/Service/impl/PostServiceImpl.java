@@ -91,6 +91,11 @@ public class PostServiceImpl implements PostService {
         User user = this.userRepository.findById(userId).orElseThrow(()->new CustomException("User with Id "+ userId+" Not found", HttpStatus.NOT_FOUND));
         Category category = this.categoryRepo.findById(Long.valueOf(postReq.getCategoryId())).orElseThrow(()->new CustomException("Category with Id "+ postReq.getCategoryId() + " Not found", HttpStatus.NOT_FOUND));
 
+        int postCount = postRepository.countPostsByUserToday(userId);
+        if (postCount >= 10) {
+            throw new CustomException("You have reached the daily limit of 10 posts", HttpStatus.FORBIDDEN);
+        }
+
         Post post = postMapper.toEntity((postReq));
         String filename = fileService.uploadImage(path, image);
         if(filename == null){
@@ -170,20 +175,28 @@ public class PostServiceImpl implements PostService {
 
     }
 
+
+    @Override
+    public List<PostRes> getTopViewPost(){
+
+        List<Post> postList = postRepository.topViewPost();
+        List<PostRes> res = new ArrayList<>();
+        postList.forEach(post-> {
+            res.add(postMapper.toDtoTwo(post));
+        });
+
+        return res;
+    }
+
     @Override
     public List<PostRes> getAllPost() {
-
         Long userId = null;
-
         try {
             userId = authenticationFacade.getAuthentication().getUserId();
         } catch (Exception e) {
             userId = null;
         }
-
         if(userId != null) {
-
-
             List<Post> postList = postRepository.findAll();
             List<PostRes> res = new ArrayList<>();
             Long finalUserId = userId;
@@ -194,17 +207,11 @@ public class PostServiceImpl implements PostService {
                 } else {
                     postRes.setDeletable(false);
                 }
-
                 res.add(postRes);
             });
-            
-
             return res;
-
         }else {
-          
             List<Post> postList = postRepository.findAll();
-
             List<PostRes> res = new ArrayList<>();
             postList.forEach(post-> {
                 res.add(postMapper.toDtoTwo(post));
@@ -276,8 +283,10 @@ public class PostServiceImpl implements PostService {
             Optional<Post> post = postRepository.findById(postId);
 //            Post postWithoutOptional = post.get();  // Extract Post from Optional
 //            List<Like> likes = likeRepository.findByPost(postWithoutOptional);
+
             Post postEntity = post.orElseThrow(() -> new CustomException("Post not found", HttpStatus.NOT_FOUND));
             postEntity.setViewCount(postEntity.getViewCount() + 1);
+            postRepository.save(postEntity);
             PostRes postRes = postMapper.toDtoTwo(postEntity);
             List<Like> likes = likeRepository.findPostWithLikeOnly(postId);
             List<Like> dislikes = likeRepository.findPostWithDislikeOnly(postId);
