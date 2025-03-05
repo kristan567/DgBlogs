@@ -10,6 +10,7 @@ import com.example.Blog_Application2.models.Post;
 import com.example.Blog_Application2.models.User;
 import com.example.Blog_Application2.payloads.req.CommentReplyReq;
 import com.example.Blog_Application2.payloads.res.CommentReplyRes;
+import com.example.Blog_Application2.payloads.res.CommentRes;
 import com.example.Blog_Application2.repository.CommentReplyRepository;
 import com.example.Blog_Application2.repository.CommentRepository;
 import com.example.Blog_Application2.repository.PostRepository;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,13 +83,42 @@ public class CommentReplyServiceImpl implements CommentReplyService {
 
     @Override
     public List<CommentReplyRes> getAllCommentsReplyByComments(Integer commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(()->new CustomException("comment not found", HttpStatus.NOT_FOUND));
-        List<CommentReply> commentReply = commentReplyRepository.findByComment(comment);
 
-        return commentReply.stream()
-                .map(commentReplies->commentReplyMapper.toDtoTwo(commentReplies))
-                .collect(Collectors.toList());
+        Long userId = null;
 
+        try {
+            userId = authenticationFacade.getAuthentication().getUserId();
+        } catch (Exception e) {
+            userId = null;
+        }
+        if(userId != null){
+
+            Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException("comment not found", HttpStatus.NOT_FOUND));
+            List<CommentReply> commentReply = commentReplyRepository.findByComment(comment);
+            List<CommentReplyRes> res = new ArrayList<>();
+
+            Long finalUserId = userId;
+
+            commentReply.forEach(commentReply1 -> {
+                CommentReplyRes commentReplyRes = commentReplyMapper.toDtoTwo(commentReply1);
+                if(finalUserId.equals(comment.getUser().getId())){
+                    commentReplyRes.setDeletable(true);
+                }else{
+                    commentReplyRes.setDeletable(false);
+                }
+
+                res.add(commentReplyRes);
+            });
+
+            return res;
+
+        }else {
+            Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException("comment not found", HttpStatus.NOT_FOUND));
+            List<CommentReply> commentReply = commentReplyRepository.findByComment(comment);
+            return commentReply.stream()
+                    .map(commentReplies -> commentReplyMapper.toDtoTwo(commentReplies))
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override

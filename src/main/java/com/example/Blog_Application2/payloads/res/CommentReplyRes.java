@@ -34,6 +34,10 @@ public class CommentReplyRes {
 
     private Comment comment;
 
+    private boolean deletable;
+
+
+
 
     public int getId() {
         return id;
@@ -91,4 +95,12 @@ public class CommentReplyRes {
         this.comment = comment;
     }
 
+
+    public boolean isDeletable() {
+        return deletable;
+    }
+
+    public void setDeletable(boolean deletable) {
+        this.deletable = deletable;
+    }
 }
