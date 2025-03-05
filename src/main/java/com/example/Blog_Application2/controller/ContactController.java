@@ -21,11 +21,21 @@ public class ContactController {
         this.contactService = contactService;
     }
 
-    @Operation(summary = "create post")
+    @Operation(summary = "create contact")
     @PostMapping("/submit")
     public ResponseEntity<?> createContact(@Valid @RequestBody ContactReq contactReq){
         return ResponseEntity.status(HttpStatus.CREATED).body(contactService.createContact(contactReq));
     }
+
+    @Operation(summary = "view contactus")
+    @GetMapping("/view")
+    public ResponseEntity<?> createContact(){
+        return ResponseEntity.status(HttpStatus.CREATED).body(contactService.viewContact());
+    }
+
+
+
+
 
 
 }

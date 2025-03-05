@@ -28,9 +28,9 @@ public class CommentReplyRes {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
-    private Post post;
+    private PostRes post;
 
-    private User user;
+    private UserRes user;
 
     private Comment comment;
 
@@ -67,19 +67,19 @@ public class CommentReplyRes {
         this.updatedAt = updatedAt;
     }
 
-    public Post getPost() {
+    public PostRes getPost() {
         return post;
     }
 
-    public void setPost(Post post) {
+    public void setPost(PostRes post) {
         this.post = post;
     }
 
-    public User getUser() {
+    public UserRes getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserRes user) {
         this.user = user;
     }
 
