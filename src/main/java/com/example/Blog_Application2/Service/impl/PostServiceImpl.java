@@ -125,7 +125,7 @@ public class PostServiceImpl implements PostService {
         post.setContent(postReq.getContent().trim());
 //        post.setImageName(postReq.getImageName().trim());
         post.setCategory(category);
-        post.setAddDate(new Date());
+        post.setUpdateDate(new Date());
 
         post=postRepository.save(post);
         return postMapper.toDtoTwo(post);
@@ -157,6 +157,7 @@ public class PostServiceImpl implements PostService {
         }
         String filename = fileService.uploadImage(path, image);
         post.setImageName(filename);
+        post.setUpdateDate(new Date());
         postRepository.save(post);
 
         return postMapper.toDtoTwo(post);

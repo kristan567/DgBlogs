@@ -34,6 +34,9 @@ public class Post {
     @Temporal(TemporalType.DATE)
     private Date addDate;
 
+    @Temporal(TemporalType.DATE)
+    private Date updateDate;
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     @JsonIgnore
@@ -137,5 +140,14 @@ public class Post {
 
     public void setCommentReply(Set<CommentReply> commentReply) {
         this.commentReply = commentReply;
+    }
+
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 }

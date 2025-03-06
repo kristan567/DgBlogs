@@ -6,6 +6,8 @@ import com.example.Blog_Application2.models.Comment;
 import com.example.Blog_Application2.models.User;
 import com.example.Blog_Application2.payloads.req.CategoryReq;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +33,9 @@ public class PostRes {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date addDate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
+    private Date updateDate;
+
     private CategoryRes category;
 
     private UserRes user;
@@ -44,6 +49,8 @@ public class PostRes {
     private boolean DisLikedByUser;
 
     private Long viewCount;
+
+
 
 
 
@@ -146,5 +153,14 @@ public class PostRes {
 
     public void setViewCount(Long viewCount) {
         this.viewCount = viewCount;
+    }
+
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 }
