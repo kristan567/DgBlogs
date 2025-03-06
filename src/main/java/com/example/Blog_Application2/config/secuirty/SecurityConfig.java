@@ -53,7 +53,7 @@ public class SecurityConfig {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html","/login", "/signup","/signupWithImage", "/post/image/**", "/user/image/**", "/category", "/forgot-password/**", "/posts", "category/{categoryId}/posts", "/topViewPost", "post/{postId}", "like/{postId}/likeCount", "like/{postId}/disLikeCount", "comment/comments-post/{postId}" , "comment/{postId}/commentCount")
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html","/login", "/signup","/signupWithImage", "/post/image/**", "/user/image/**", "/category", "/forgot-password/**", "/posts", "category/{categoryId}/posts", "/topViewPost", "post/{postId}", "like/{postId}/likeCount", "like/{postId}/disLikeCount", "comment/comments-post/{postId}" , "comment/{postId}/commentCount", "/CommentReply-comment/{commentId}")
                         .permitAll()
                         .anyRequest().authenticated()
                 )
