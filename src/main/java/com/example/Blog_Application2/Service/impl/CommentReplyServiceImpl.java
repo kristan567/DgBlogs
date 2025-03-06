@@ -11,6 +11,7 @@ import com.example.Blog_Application2.models.User;
 import com.example.Blog_Application2.payloads.req.CommentReplyReq;
 import com.example.Blog_Application2.payloads.res.CommentReplyRes;
 import com.example.Blog_Application2.payloads.res.CommentRes;
+import com.example.Blog_Application2.payloads.res.PostRes;
 import com.example.Blog_Application2.repository.CommentReplyRepository;
 import com.example.Blog_Application2.repository.CommentRepository;
 import com.example.Blog_Application2.repository.PostRepository;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -97,11 +99,17 @@ public class CommentReplyServiceImpl implements CommentReplyService {
             List<CommentReply> commentReply = commentReplyRepository.findByComment(comment);
             List<CommentReplyRes> res = new ArrayList<>();
 
+            Integer commentReplyId = commentReply.isEmpty() ? null : commentReply.get(0).getId();
+            Optional<CommentReply> commentReply1 = commentReplyRepository.findById(commentReplyId);
+
+            CommentReply commentReply2 = commentReply1.orElseThrow(() -> new CustomException("Post not found", HttpStatus.NOT_FOUND));
+
+
             Long finalUserId = userId;
 
-            commentReply.forEach(commentReply1 -> {
-                CommentReplyRes commentReplyRes = commentReplyMapper.toDtoTwo(commentReply1);
-                if(finalUserId.equals(comment.getUser().getId())){
+            commentReply.forEach(commentReply3 -> {
+                CommentReplyRes commentReplyRes = commentReplyMapper.toDtoTwo(commentReply3);
+                if(finalUserId.equals(commentReply2.getUser().getId())){
                     commentReplyRes.setDeletable(true);
                 }else{
                     commentReplyRes.setDeletable(false);
@@ -120,6 +128,53 @@ public class CommentReplyServiceImpl implements CommentReplyService {
                     .collect(Collectors.toList());
         }
     }
+
+    public CommentReplyRes getCommentReplyById(Integer commentReplyId){
+
+
+        Long userId = null;
+
+        try {
+            userId = authenticationFacade.getAuthentication().getUserId();
+        } catch (Exception e) {
+            userId = null;
+        }
+        if(userId != null){
+
+
+            Optional<CommentReply> commentReply = commentReplyRepository.findById(commentReplyId);
+            CommentReply commentReply1 = commentReply.orElseThrow(() -> new CustomException("Post not found", HttpStatus.NOT_FOUND));
+            List<CommentReplyRes> res = new ArrayList<>();
+
+            Long finalUserId = userId;
+
+                CommentReplyRes commentReplyRes = commentReplyMapper.toDtoTwo(commentReply1);
+                if(finalUserId.equals(commentReply1.getUser().getId())){
+                    commentReplyRes.setDeletable(true);
+                }else{
+                    commentReplyRes.setDeletable(false);
+                }
+            return commentReplyRes;
+
+        }else {
+            Optional<CommentReply> commentReply = commentReplyRepository.findById(commentReplyId);
+            if (commentReply.isEmpty())
+                throw new CustomException("post with Id: " + commentReplyId + " not found", HttpStatus.NOT_FOUND);
+
+            CommentReply commentReplyEntity = commentReply.orElseThrow(() -> new CustomException("Post not found", HttpStatus.NOT_FOUND));
+
+
+
+
+            CommentReplyRes res = commentReplyMapper.toDtoTwo(commentReply.get());
+//        PostRes res = TransferObject.convert(post.get(), PostRes.class);
+            return res;
+        }
+
+    }
+
+
+
 
     @Override
     public String deleteCommentReply(Integer commentReplyId) {
