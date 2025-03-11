@@ -4,14 +4,10 @@ import com.example.Blog_Application2.Service.CommentService;
 import com.example.Blog_Application2.Service.mappers.CommentMapper;
 import com.example.Blog_Application2.config.secuirty.AuthenticationFacade;
 import com.example.Blog_Application2.exception.CustomException;
-import com.example.Blog_Application2.models.Comment;
-import com.example.Blog_Application2.models.Post;
-import com.example.Blog_Application2.models.User;
+import com.example.Blog_Application2.models.*;
 import com.example.Blog_Application2.payloads.req.CommentReq;
 import com.example.Blog_Application2.payloads.res.CommentRes;
-import com.example.Blog_Application2.repository.CommentRepository;
-import com.example.Blog_Application2.repository.PostRepository;
-import com.example.Blog_Application2.repository.UserRepository;
+import com.example.Blog_Application2.repository.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -33,13 +29,19 @@ public class CommentServiceImpl implements CommentService {
 
     private final AuthenticationFacade authenticationFacade;
 
+    private final LikeRepository likeRepository;
 
-    public CommentServiceImpl(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository, CommentMapper commentMapper, AuthenticationFacade authenticationFacade) {
+    private final CommentReactRepository commentReactCommentRepository;
+
+
+    public CommentServiceImpl(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository, CommentMapper commentMapper, AuthenticationFacade authenticationFacade, LikeRepository likeRepository, CommentReactRepository commentReactCommentRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
         this.commentMapper = commentMapper;
         this.authenticationFacade = authenticationFacade;
+        this.likeRepository = likeRepository;
+        this.commentReactCommentRepository = commentReactCommentRepository;
     }
 
     @Override
@@ -120,9 +122,15 @@ public class CommentServiceImpl implements CommentService {
 
         if(userId != null){
             Post post = postRepository.findById(postId).orElseThrow(()-> new CustomException("post not found", HttpStatus.NOT_FOUND));
-            List<Comment> comments = commentRepository.findByPost(post);
-            List<CommentRes> res = new ArrayList<>();
 
+            List<Comment> comments = commentRepository.findByPost(post);
+            Integer commentId = comments.isEmpty() ? null : comments.get(0).getId();
+
+
+
+            List<CommentRes> res = new ArrayList<>();
+            List<CommentReact> likes = commentReactCommentRepository.findPostWithLikeOnly(commentId);
+            List<CommentReact> dislikes = commentReactCommentRepository.findPostWithDislikeOnly(commentId);
             Long finalUserId = userId;
             comments.forEach(comment -> {
                 CommentRes commentRes = commentMapper.toDtoTwo(comment);
@@ -131,6 +139,15 @@ public class CommentServiceImpl implements CommentService {
                 }else{
                     commentRes.setDeletable(false);
                 }
+
+
+                boolean userHasLiked = likes.stream().anyMatch(like-> like.getUser().getId() == (finalUserId));
+
+                commentRes.setLikedByUser(userHasLiked);
+
+                boolean userHasDisliked = dislikes.stream().anyMatch(dislike -> dislike.getUser().getId() == (finalUserId));
+
+                commentRes.setDisLikedByUser(userHasDisliked);
 
                 res.add(commentRes);
             });

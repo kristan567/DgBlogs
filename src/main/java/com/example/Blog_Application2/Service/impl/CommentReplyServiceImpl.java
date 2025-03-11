@@ -173,9 +173,6 @@ public class CommentReplyServiceImpl implements CommentReplyService {
 
     }
 
-
-
-
     @Override
     public String deleteCommentReply(Integer commentReplyId) {
         Long userId = authenticationFacade.getAuthentication().getUserId();
