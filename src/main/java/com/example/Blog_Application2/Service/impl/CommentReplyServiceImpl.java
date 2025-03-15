@@ -109,11 +109,12 @@ public class CommentReplyServiceImpl implements CommentReplyService {
 
             commentReply.forEach(commentReply3 -> {
                 CommentReplyRes commentReplyRes = commentReplyMapper.toDtoTwo(commentReply3);
-                if(finalUserId.equals(commentReply2.getUser().getId())){
+                if(finalUserId.equals(commentReply3.getUser().getId())){                                                //this is 3 because i need to check for all comments not just one
                     commentReplyRes.setDeletable(true);
                 }else{
                     commentReplyRes.setDeletable(false);
                 }
+
 
                 res.add(commentReplyRes);
             });

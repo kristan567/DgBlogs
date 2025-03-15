@@ -1,6 +1,7 @@
 package com.example.Blog_Application2.repository;
 
 import com.example.Blog_Application2.models.User;
+import com.example.Blog_Application2.payloads.req.LoginReq;
 import com.example.Blog_Application2.projection.UserProjection;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -43,11 +44,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<Object[]> UserIncreasedInMonth();
 
 
+    @Query(value="SELECT * from users u where u.email = ?1", nativeQuery = true)
+    User findUser(String Username);
+
 
 
 
 
     @Query(value = "SELECT * FROM users u WHERE u.id = :id", nativeQuery = true)
     Optional<User> findForEmail(@Param("id") Long id);
+
 
 }

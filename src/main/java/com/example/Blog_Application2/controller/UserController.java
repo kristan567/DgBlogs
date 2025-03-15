@@ -12,20 +12,13 @@ import com.example.Blog_Application2.payloads.req.ResetPassReq;
 import com.example.Blog_Application2.payloads.req.UserReq;
 import com.example.Blog_Application2.payloads.res.LoginRes;
 import com.example.Blog_Application2.repository.UserRepository;
-import com.example.Blog_Application2.utils.AppConstant;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -96,9 +89,28 @@ public class UserController {
                 new UsernamePasswordAuthenticationToken(loginReq.getUsername(), loginReq.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);          //The SecurityContext is used throughout the application to identify the currently authenticated user.(currently logged in user)
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginReq.getUsername());        //feteh user details from getusername and pass to the token for generation
+        if(userDetails!= null){
+            User user = userRepository.findUser(loginReq.getUsername());
+            user.setActive(true);
+            userRepository.save(user);
+        }
         final String token = jwtUtil.generateToken(userDetails);      //  Calls a utility class (jwtUtil) to create a JWT token using the user's details.
         return ResponseEntity.ok().body(new LoginRes(token));       //Sends the token back to the client, which will store it (usually in localStorage, sessionStorage, or cookies) and include it in future requests for authentication.
     }
+
+    @Operation(summary = "user active status is false")
+    @PostMapping("/user-logout")
+    public String loginOut(){
+        long userId = facade.getAuthentication().getUserId();
+        Optional<User> userOptional = userRepository.findById(userId);
+        User user = userOptional.get();
+        user.setActive(false);
+        userRepository.save(user);
+
+        return "user is logged out";
+    }
+
+
 
     @Operation(summary = "confirm if user is logged in successfully")
     @GetMapping("/logged-in-user")

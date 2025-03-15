@@ -141,11 +141,13 @@ public class CommentServiceImpl implements CommentService {
                 }
 
 
-                boolean userHasLiked = likes.stream().anyMatch(like-> like.getUser().getId() == (finalUserId));
+                boolean userHasLiked = commentReactCommentRepository.findPostWithLikeOnly(comment.getId())
+                        .stream().anyMatch(like -> like.getUser().getId() == (finalUserId));
 
                 commentRes.setLikedByUser(userHasLiked);
 
-                boolean userHasDisliked = dislikes.stream().anyMatch(dislike -> dislike.getUser().getId() == (finalUserId));
+                boolean userHasDisliked = commentReactCommentRepository.findPostWithDislikeOnly(comment.getId())
+                        .stream().anyMatch(dislike -> dislike.getUser().getId() == (finalUserId));
 
                 commentRes.setDisLikedByUser(userHasDisliked);
 
